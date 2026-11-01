@@ -47,7 +47,7 @@ Each review must reference prior relevant review IDs and ledger state, and produ
 
 A decision can close only with explicit acceptance criteria, evidence of the implemented outcome, disposition of unresolved findings, and authorized closure where required. Closure does not terminate monitoring. If no correction is warranted, record why, what would falsify that conclusion, and when to revisit it.
 
-Independent first-pass inputs exclude the drift ledger's implementation-specific history; relevant history can be disclosed during post-seal evidence exchange. The contextual agent uses the ledger from the outset. This asymmetry is intentional.
+Independent first-pass inputs exclude the drift ledger's implementation-specific history; relevant history can be disclosed during post-seal evidence exchange. Sealed observations of the affected parts may be included as facts only, stripped of diagnosis, prediction, proposal rationale, and alternatives, so that a re-evaluation can see what actually happened without inheriting why the implementer thought it would work. The contextual agent uses the ledger from the outset. This asymmetry is intentional.
 
 ## Review triggers
 

@@ -3,6 +3,30 @@
 Status: **Planning only; no implementation authorization**  
 Depends on: human ratification of `CHARTER.md`.
 
+## Reconciliation with ADR 0001 (proposed, 2026-11-01)
+
+Phase 0 below is complete and kept for history. Its two tracks produced Track A (PR #1) and Track B, and their synthesis is ADR 0001 (`docs/adr/0001-authoritative-state.md`, ratified by Scott and merged as 525ac5e). ADR 0001 answers Phase 0's representation question and fixes the Phase 1 contracts in outline. Phases 1 to 3 are now delivered by the ADR's build slices, in this order. Phase 4 integration and the full charter acceptance criteria (Atlas, an unrelated project, cloud agents, a second platform) come after the MVP and are not claimed by it.
+
+### Gate
+
+Nothing below starts until Scott has (1) ratified `CHARTER.md`, (2) chosen the reference language and runtime, and (3) approved opening the slice issues. Before that, only documents like this one may change, and they stay non-authoritative.
+
+### Dependency-ordered MVP
+
+| Step | Slice | Depends on | Acceptance check |
+|---|---|---|---|
+| V1 | Thin vertical slice through 1, 2, 3 (below) | gate | One scripted cycle (origin intent, finding, candidate, accept authorization, baseline install, confirming observation) replays from `log.jsonl` to `closed-confirmed`. Golden hashes are byte-stable across two runs. A one-byte edit to any record makes replay fail with `invalid_record`. Assessments are recorded `independence_unverified` and never relabelled. |
+| 1 | Schema, JCS hashing, validator | V1 | Golden-hash vectors for every record kind; every ADR validity rule has a failing example. |
+| 2 | Log, replay, baseline chain, `baseline_conflict` | 1 | Two heads block new boardings; a resolution citing only one head is rejected. |
+| 3 | Finding fold and candidate fold | 2 | Matches Track A's derived-status table; a refused candidate leaves its finding `open`; a `stop` missing `falsifier` is rejected. |
+| 4 | Renderer, packets, stale detection, `propose` parser | 1, 2 | Packet bytes that don't hash to the sealed value, or mismatched source ids, invalidate the authorization even when the renderer version matches. |
+| 5 | Isolation launcher interface and local adapter | 4 | The assessor packet excludes diagnosis, rationale, and alternatives; unverifiable isolation yields `independence_unverified`. |
+| 6 | Ferry fixture end to end | 1 to 5 | Narrow accept in cycle 1, failed correction in cycle 2, retry cites `differs_from`. |
+| 7 | consulting-os fixture | 6 | D1, failed C1, C2, reopen, without rewriting the baseline. |
+| 8 | Theseus reviews a change to itself | 1 to 7, ratified charter as origin | The ratified charter is the origin baseline; the change runs through the same validator. |
+
+V1 is the first executable vertical slice. It proves the core loop (record, hash, log, fold) before any projection or launcher exists, and slices 1 to 3 then harden it. Owners are as in ADR 0001.
+
 ## Mission for the build agent
 
 Design a standalone, portable architectural-drift review capability from first principles. Do **not** inherit Atlas, Maxwell, consulting-os, Cursor Cloud, or rm-coding-agents-config architecture. These are eventual consumers and test fixtures, not architectural authorities.
