@@ -21,6 +21,10 @@ Detect when agents optimize an inherited implementation while losing sight of th
 8. **No self-exemption.** Changes to Theseus itself must undergo the same review.
 9. **Advisory reasoning, enforceable evidence.** Automated checks validate artifacts, isolation attestations, and required approvals; they do not claim to prove correctness of an LLM's judgment.
 10. **Adapters at the edge.** Platform integration belongs in adapters, not the portable protocol.
+11. **Closed-loop correction.** Reviews must feed diagnosed drift, corrective hypotheses, authorization, implementation observations, and measured outcomes into subsequent reviews. A review gate without outcome feedback is incomplete.
+12. **Persistent state without baseline capture.** Maintain a portable, versioned drift ledger of unresolved disagreements, corrective actions, observations, and review triggers. Ledger history informs evaluation but never silently replaces original intent or contaminates the independent evaluator's initial context.
+13. **Evaluate the evaluator.** Test whether the process detects seeded and historical drift, false alarms, missed corrections, and convergence of the two perspectives. Preserve failure evidence and revisit the protocol when it stops finding meaningful distinctions.
+
 
 ## Required review sequence
 
@@ -31,8 +35,19 @@ Detect when agents optimize an inherited implementation while losing sight of th
 5. Compare assumptions, alternatives, objective alignment, implementation constraints, and contradictions.
 6. Permit targeted evidence exchange, explicitly labeling facts versus justification.
 7. Preserve reconciliation and unresolved dissent; request authorization when required.
+8. Convert findings into explicit corrective hypotheses, authorized actions, expected observable outcomes, and a next-review trigger.
+9. Observe implementation and actual outcomes; link observations to prior predictions and corrections.
+10. Re-evaluate the updated design against pinned intent and prior unresolved findings; continue until decision-specific acceptance criteria are satisfied or an authorized stop is recorded. Project-level monitoring continues.
 
 The two initial assessments may run concurrently; order is not a source of authority.
+
+## Feedback state and closure
+
+Each review must reference prior relevant review IDs and ledger state, and produce an updated ledger entry with: intent baseline ID, change ID, competing assessments, disagreement status, corrective hypothesis, authorized action, expected evidence, observed evidence, outcome assessment, unresolved alternatives, next trigger, and provenance. The ledger is append-only or revision-linked; it is **not** an alternative source of intent authority.
+
+A decision can close only with explicit acceptance criteria, evidence of the implemented outcome, disposition of unresolved findings, and authorized closure where required. Closure does not terminate monitoring. If no correction is warranted, record why, what would falsify that conclusion, and when to revisit it.
+
+Independent first-pass inputs exclude the drift ledger's implementation-specific history; relevant history can be disclosed during post-seal evidence exchange. The contextual agent uses the ledger from the outset. This asymmetry is intentional.
 
 ## Review triggers
 
@@ -46,6 +61,8 @@ Consequential decisions: domain ontology, persistence, architecture boundaries, 
 - Detect the consulting-os regression: governing the inherited Python implementation is not equivalent to making implementations replaceable.
 - Preserve disagreement and provenance across asynchronous sessions.
 - Catch an analogous architectural drift introduced into Theseus itself.
+- Demonstrate at least two linked review cycles: detection, correction, observed outcome, and re-evaluation, including a case where the first correction fails.
+- Demonstrate that a closed review can reopen when new evidence or changed design warrants it, without silently rewriting its baseline.
 
 ## Non-goals (initial scope)
 
