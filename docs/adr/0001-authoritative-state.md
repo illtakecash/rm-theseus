@@ -1,6 +1,6 @@
 # ADR 0001: Authoritative state for Theseus
 
-Status: **Proposed. Not ratified.** Scott authorizes; neither drafting agent can.
+Status: **Ratified** by Scott Gardner on 2026-11-01 (in chat with Grok Bot; recorded by Grok Bot, Track A). Drafted jointly by Track A and Track B; neither drafting agent could ratify.
 Drafted by: Grok Bot (Track A), from the convergence in issue #2 with ChatGPT (Track B).
 Depends on: ratification of `CHARTER.md` (still "proposed baseline"), per `.plan/implementation.md`.
 
