@@ -1,0 +1,39 @@
+name: Ping Grok Bot on comments
+
+on:
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created]
+  pull_request:
+    types: [opened, synchronize]
+  pull_request_review:
+    types: [submitted]
+  pull_request_review_comment:
+    types: [created]
+  discussion:
+    types: [created]
+  discussion_comment:
+    types: [created]
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    if: ${{ !endsWith(github.event.comment.user.login || github.event.review.user.login || github.event.discussion.user.login || github.event.issue.user.login || github.event.pull_request.user.login || github.actor, '[bot]') }}
+    steps:
+      - name: Notify Grok Bot routine
+        env:
+          URL: ${{ secrets.GROKBOT_WEBHOOK_URL }}
+          TOKEN: ${{ secrets.GROKBOT_WEBHOOK_TOKEN }}
+          EVENT: ${{ github.event_name }}
+          ITEM: ${{ github.event.issue.html_url || github.event.pull_request.html_url || github.event.discussion.html_url }}
+          COMMENT: ${{ github.event.comment.html_url || github.event.review.html_url }}
+        run: |
+          jq -n --arg event "$EVENT" --arg item "$ITEM" --arg comment "$COMMENT" \
+            '{repo: "illtakecash/rm-theseus", event: $event, item: $item, comment: $comment}' |
+          curl -fsS -X POST "$URL" \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Content-Type: application/json" \
+            --data @-
