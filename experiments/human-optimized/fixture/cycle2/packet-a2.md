@@ -1,20 +1,21 @@
 # Assessment packet A2
 
 - Kind: packet
-- Act: assess
+- Act: package
 - Actor: clerk
 - Baseline: B1
 - Finding: F2
+- Inputs: fixture/b0/intent.md, fixture/cycle1/baseline-b1.md, fixture/b0/parts.md, fixture/cycle1/p-notice-c1.md, fixture/cycle2/p-notice-c2.md, fixture/cycle1/observation-o1.md, fixture/cycle1/observation-o2.md
+- Input-hash: fixture/b0/intent.md 6e057404c1a4a6d73756d9289ac1f9a4abf7d0df4dd0b3916054f632c00d1a23
+- Input-hash: fixture/cycle1/baseline-b1.md 27693e11e963e73072236cd7a3def940adcd9b62aac5d7261ee5bd6e3269e323
+- Input-hash: fixture/b0/parts.md c66ea113ee5454847f5a818525cac8b947e377f056016f1cce51b940e25a9f33
+- Input-hash: fixture/cycle1/p-notice-c1.md 81145495608043002140a21bccdc00fa06c08f873b056d8af612fa2368fe14ad
+- Input-hash: fixture/cycle2/p-notice-c2.md 7ce37051f10c004bf267bf114de0a87599a3f1c5d99fe46cf5b2b52e184a2a36
+- Input-hash: fixture/cycle1/observation-o1.md c530b33a67a07d2fd5c0306d0b2c4cddaca6409f1d6bfdccf29a7179b0377010
+- Input-hash: fixture/cycle1/observation-o2.md 85be93ea58e1eda6c2d4b7c83270e6c340670218a537e91926102a7a558a705c
 - Excluded: fixture/cycle2/diagnosis-d2.md, fixture/cycle2/proposal-c2.md
-- Source: fixture/b0/intent.md 6e057404c1a4a6d73756d9289ac1f9a4abf7d0df4dd0b3916054f632c00d1a23
-- Source: fixture/cycle1/baseline-b1.md 191203092d4260403b80b14d5c66a38567f32f825b56478fc1f00c54864b5467
-- Source: fixture/b0/parts.md c66ea113ee5454847f5a818525cac8b947e377f056016f1cce51b940e25a9f33
-- Source: fixture/cycle1/p-notice-c1.md 81145495608043002140a21bccdc00fa06c08f873b056d8af612fa2368fe14ad
-- Source: fixture/cycle2/p-notice-c2.md 7ce37051f10c004bf267bf114de0a87599a3f1c5d99fe46cf5b2b52e184a2a36
-- Source: fixture/cycle1/observation-o1.md a40b50fde9c11dfa42fa4f91f6c80b2f323f366df14ac016ab1bc190550a2244
-- Source: fixture/cycle1/observation-o2.md d7b75e953f501021120945eb6fa30b815e2b78eaa6032bf3b43abd649795dbd3
 
-The copies below are the assessor's entire allowed input. If a copy disagrees with the source file named above, this packet is void. Do not open the excluded files. Do not open a projection.
+The copies below are the assessor's entire allowed input. If a copy disagrees with the source file and digest named on `Input-hash` above, this packet is void. Do not open the excluded files. Do not open a projection.
 
 Aboard P-NOTICE is the copy of fixture/cycle1/p-notice-c1.md. The P-NOTICE entry inside fixture/b0/parts.md is the origin plank and is not aboard at B1. P-LOAD and P-CREW aboard are the entries in that origin file. The candidate is the copy of fixture/cycle2/p-notice-c2.md.
 
@@ -77,7 +78,7 @@ Origin intent for the harbor ferry. These entries are the ship's identity. Repla
 - Actor: harbor-master
 - Previous: B0
 - Previous-hash: fixture/b0/baseline.md 1280e0b0d77c99bbe09d6fe8412b8ae55f0cc4bf4430ad2a7cfc0161a9d5ed62
-- Installed-by: fixture/cycle1/authorization-r1.md 784aa9b49a88040c588eb0b1a7106ffdea21083e625c96d4c38a7c3f3394c06b
+- Installed-by: fixture/cycle1/authorization-r1.md d91e81d5dfb0fa033d7fa85977e3cd575db61cbc5d7beafd499af22f06417f98
 - Includes: P-LOAD = fixture/b0/parts.md c66ea113ee5454847f5a818525cac8b947e377f056016f1cce51b940e25a9f33
 - Includes: P-NOTICE = fixture/cycle1/p-notice-c1.md 81145495608043002140a21bccdc00fa06c08f873b056d8af612fa2368fe14ad
 - Includes: P-CREW = fixture/b0/parts.md c66ea113ee5454847f5a818525cac8b947e377f056016f1cce51b940e25a9f33
@@ -176,7 +177,9 @@ Plank offered for P-NOTICE while finding F2 is open. This file is a yard plank u
 - Act: observe
 - Actor: dock-watch
 - Baseline: B0
+- Inputs: fixture/b0/baseline.md, fixture/b0/parts.md
 - Input-hash: fixture/b0/baseline.md 1280e0b0d77c99bbe09d6fe8412b8ae55f0cc4bf4430ad2a7cfc0161a9d5ed62
+- Input-hash: fixture/b0/parts.md c66ea113ee5454847f5a818525cac8b947e377f056016f1cce51b940e25a9f33
 - Excluded: fixture/cycle1/diagnosis-d1.md
 - Class: break
 - Names: INV-1, INV-2, P-NOTICE, P-LOAD, P-CREW
@@ -197,7 +200,10 @@ INV-1 is unmet because twelve people boarded and the authorized limit is 10. INV
 - Act: observe
 - Actor: dock-watch
 - Baseline: B1
-- Input-hash: fixture/cycle1/baseline-b1.md 191203092d4260403b80b14d5c66a38567f32f825b56478fc1f00c54864b5467
+- Inputs: fixture/cycle1/baseline-b1.md, fixture/cycle1/p-notice-c1.md, fixture/b0/parts.md
+- Input-hash: fixture/cycle1/baseline-b1.md 27693e11e963e73072236cd7a3def940adcd9b62aac5d7261ee5bd6e3269e323
+- Input-hash: fixture/cycle1/p-notice-c1.md 81145495608043002140a21bccdc00fa06c08f873b056d8af612fa2368fe14ad
+- Input-hash: fixture/b0/parts.md c66ea113ee5454847f5a818525cac8b947e377f056016f1cce51b940e25a9f33
 - Excluded: fixture/cycle1/diagnosis-d1.md, fixture/cycle1/proposal-c1.md
 - Class: tension
 - Names: INV-2, P-NOTICE, P-LOAD

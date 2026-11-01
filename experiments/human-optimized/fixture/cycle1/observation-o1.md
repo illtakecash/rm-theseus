@@ -4,7 +4,9 @@
 - Act: observe
 - Actor: dock-watch
 - Baseline: B0
+- Inputs: fixture/b0/baseline.md, fixture/b0/parts.md
 - Input-hash: fixture/b0/baseline.md 1280e0b0d77c99bbe09d6fe8412b8ae55f0cc4bf4430ad2a7cfc0161a9d5ed62
+- Input-hash: fixture/b0/parts.md c66ea113ee5454847f5a818525cac8b947e377f056016f1cce51b940e25a9f33
 - Excluded: fixture/cycle1/diagnosis-d1.md
 - Class: break
 - Names: INV-1, INV-2, P-NOTICE, P-LOAD, P-CREW

@@ -4,7 +4,10 @@
 - Act: observe
 - Actor: dock-watch
 - Baseline: B1
-- Input-hash: fixture/cycle1/baseline-b1.md 191203092d4260403b80b14d5c66a38567f32f825b56478fc1f00c54864b5467
+- Inputs: fixture/cycle1/baseline-b1.md, fixture/cycle1/p-notice-c1.md, fixture/b0/parts.md
+- Input-hash: fixture/cycle1/baseline-b1.md 27693e11e963e73072236cd7a3def940adcd9b62aac5d7261ee5bd6e3269e323
+- Input-hash: fixture/cycle1/p-notice-c1.md 81145495608043002140a21bccdc00fa06c08f873b056d8af612fa2368fe14ad
+- Input-hash: fixture/b0/parts.md c66ea113ee5454847f5a818525cac8b947e377f056016f1cce51b940e25a9f33
 - Excluded: fixture/cycle1/diagnosis-d1.md, fixture/cycle1/proposal-c1.md
 - Class: tension
 - Names: INV-2, P-NOTICE, P-LOAD

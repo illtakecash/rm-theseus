@@ -1,16 +1,17 @@
 # Assessment packet A1
 
 - Kind: packet
-- Act: assess
+- Act: package
 - Actor: clerk
 - Baseline: B0
+- Inputs: fixture/b0/intent.md, fixture/b0/parts.md, fixture/cycle1/p-notice-c1.md, fixture/cycle1/observation-o1.md
+- Input-hash: fixture/b0/intent.md 6e057404c1a4a6d73756d9289ac1f9a4abf7d0df4dd0b3916054f632c00d1a23
+- Input-hash: fixture/b0/parts.md c66ea113ee5454847f5a818525cac8b947e377f056016f1cce51b940e25a9f33
+- Input-hash: fixture/cycle1/p-notice-c1.md 81145495608043002140a21bccdc00fa06c08f873b056d8af612fa2368fe14ad
+- Input-hash: fixture/cycle1/observation-o1.md c530b33a67a07d2fd5c0306d0b2c4cddaca6409f1d6bfdccf29a7179b0377010
 - Excluded: fixture/cycle1/diagnosis-d1.md, fixture/cycle1/proposal-c1.md
-- Source: fixture/b0/intent.md 6e057404c1a4a6d73756d9289ac1f9a4abf7d0df4dd0b3916054f632c00d1a23
-- Source: fixture/b0/parts.md c66ea113ee5454847f5a818525cac8b947e377f056016f1cce51b940e25a9f33
-- Source: fixture/cycle1/p-notice-c1.md 81145495608043002140a21bccdc00fa06c08f873b056d8af612fa2368fe14ad
-- Source: fixture/cycle1/observation-o1.md a40b50fde9c11dfa42fa4f91f6c80b2f323f366df14ac016ab1bc190550a2244
 
-The copies below are the assessor's entire allowed input. If a copy disagrees with the source file named above, this packet is void. Do not open the excluded files. Do not open a projection.
+The copies below are the assessor's entire allowed input. If a copy disagrees with the source file and digest named on `Input-hash` above, this packet is void. Do not open the excluded files. Do not open a projection.
 
 ## Copy of fixture/b0/intent.md
 
@@ -133,7 +134,9 @@ Plank offered for P-NOTICE. The proposal envelope, including rationale and alter
 - Act: observe
 - Actor: dock-watch
 - Baseline: B0
+- Inputs: fixture/b0/baseline.md, fixture/b0/parts.md
 - Input-hash: fixture/b0/baseline.md 1280e0b0d77c99bbe09d6fe8412b8ae55f0cc4bf4430ad2a7cfc0161a9d5ed62
+- Input-hash: fixture/b0/parts.md c66ea113ee5454847f5a818525cac8b947e377f056016f1cce51b940e25a9f33
 - Excluded: fixture/cycle1/diagnosis-d1.md
 - Class: break
 - Names: INV-1, INV-2, P-NOTICE, P-LOAD, P-CREW

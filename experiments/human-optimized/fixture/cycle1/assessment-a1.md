@@ -5,7 +5,7 @@
 - Actor: assessor
 - Baseline: B0
 - Inputs: fixture/cycle1/packet-a1.md
-- Input-hash: fixture/cycle1/packet-a1.md dab5fef15f7eb982af4f5cfaafb14bc069a0f53a362464784e18a4beb43ce33c
+- Input-hash: fixture/cycle1/packet-a1.md f8b31ecd1fafddd2de70867b2a9ae9b1f568f7019bffbc52c645b4021119d0fd
 - Excluded: fixture/cycle1/diagnosis-d1.md, fixture/cycle1/proposal-c1.md
 
 Judgments below use the packet only. This assessment does not write a replacement entry.

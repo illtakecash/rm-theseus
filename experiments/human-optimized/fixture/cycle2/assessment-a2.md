@@ -6,7 +6,7 @@
 - Baseline: B1
 - Finding: F2
 - Inputs: fixture/cycle2/packet-a2.md
-- Input-hash: fixture/cycle2/packet-a2.md 36fb3961092fc19fbda730a8be2a9475c8412143024692a998de259b3e1f7ab8
+- Input-hash: fixture/cycle2/packet-a2.md 2f7ace08b63fed0aad6c1418e13f56890bfeb0b7dcbe6f6bbea23631a0c71675
 - Excluded: fixture/cycle2/diagnosis-d2.md, fixture/cycle2/proposal-c2.md
 
 Judgments below use the packet only. This assessment does not write a replacement entry.

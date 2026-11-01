@@ -8,10 +8,11 @@
 - Verdict: accept-narrow
 - Scope: INV-2, P-NOTICE
 - Inputs: fixture/cycle1/assessment-a1.md, fixture/cycle1/proposal-c1.md, fixture/cycle1/p-notice-c1.md, fixture/b0/parts.md
-- Input-hash: fixture/cycle1/assessment-a1.md 0b7b9f53c4069a80c4a4b4b28e9c18b8b9779543a6714fc90c6405d1c230d6a8
-- Input-hash: fixture/cycle1/proposal-c1.md 93c87166d8a83e94af6b5713f0e4e78906c296e5b98fae064d1789d4a99448d5
+- Input-hash: fixture/cycle1/assessment-a1.md ba10081c66690e013ff76cba0e20834f6d657fcb0cadf2f2ed0cf18541d3f614
+- Input-hash: fixture/cycle1/proposal-c1.md 5f996766c49c81195c7cd6f13adc671d6289b23a2d9889461b84dd327061098c
 - Input-hash: fixture/cycle1/p-notice-c1.md 81145495608043002140a21bccdc00fa06c08f873b056d8af612fa2368fe14ad
 - Input-hash: fixture/b0/parts.md c66ea113ee5454847f5a818525cac8b947e377f056016f1cce51b940e25a9f33
+- Excluded: fixture/cycle1/diagnosis-d1.md
 - Names-realization: P-NOTICE = fixture/cycle1/p-notice-c1.md 81145495608043002140a21bccdc00fa06c08f873b056d8af612fa2368fe14ad
 - Names-realization: P-LOAD = fixture/b0/parts.md c66ea113ee5454847f5a818525cac8b947e377f056016f1cce51b940e25a9f33
 - Names-realization: P-CREW = fixture/b0/parts.md c66ea113ee5454847f5a818525cac8b947e377f056016f1cce51b940e25a9f33

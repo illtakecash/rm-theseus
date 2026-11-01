@@ -5,10 +5,10 @@
 - Finding: F2
 - Baseline: B1
 - Source-hash: fixture/b0/intent.md 6e057404c1a4a6d73756d9289ac1f9a4abf7d0df4dd0b3916054f632c00d1a23
-- Source-hash: fixture/cycle1/baseline-b1.md 191203092d4260403b80b14d5c66a38567f32f825b56478fc1f00c54864b5467
-- Source-hash: fixture/cycle2/refusal-r2.md a7ce9546a0dc1e635dfe5274f3c5145490121c484269256484e9725d79cbe791
-- Source-hash: fixture/cycle2/observation-o3.md d0a5de834d3ad87aab540f15ebf2eb75451fd1aceb573ec4dafbef8bd6523afa
-- Source-hash: fixture/cycle2/assessment-a2.md aefdae23d090f666c93763f0fd64e061704a9796e3f5e48fe3f7bd9cbe5de406
+- Source-hash: fixture/cycle1/baseline-b1.md 27693e11e963e73072236cd7a3def940adcd9b62aac5d7261ee5bd6e3269e323
+- Source-hash: fixture/cycle2/refusal-r2.md 8eaaaf3223b97dbb5df939cde32aad042226e6172fc6472bb23f4ed7ddc9b4c8
+- Source-hash: fixture/cycle2/observation-o3.md 59128f04669316340fa8170454da12cff1b291c465486ec504b69cf1f584d3a2
+- Source-hash: fixture/cycle2/assessment-a2.md a68044a4c35218aa230e5772555ba7f5db8da541e4c5970c96f907bd74ca9f03
 
 Derived, not authorized. If this sheet disagrees with the source acts, the source acts win.
 

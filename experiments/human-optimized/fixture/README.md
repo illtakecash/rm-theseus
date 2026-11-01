@@ -27,14 +27,15 @@ Read `fixture/cycle1/baseline-b1.md`, then only the files it names, plus `fixtur
 
 ## Verify the example
 
-1. From the repository root, compute SHA-256 for every file listed in `fixture/seal-log.md`.
+1. From `experiments/human-optimized/`, where every `fixture/...` path in these files is rooted, compute SHA-256 for every file listed in `fixture/seal-log.md`.
 2. Compare each digest to the `body` field on that file's record.
 3. Check the `prev` chain: the first record says `genesis`; each later `prev` is the SHA-256 of the previous record line including its terminating newline.
-4. Confirm `baseline-b1.md` quotes the authorization digest, and that the authorization quotes the assessment digest, and that the assessment quotes the packet digest.
-5. Confirm packet A1's excluded list names `diagnosis-d1.md` and `proposal-c1.md`, and that those phrases from the diagnosis ("Cause claim") do not appear as the assessment's reasoning. The assessment may name the excluded filename.
-6. Do the same for packet A2 and diagnosis D2.
+4. Check every act's manifest. Each file whose `Kind` is observation, diagnosis, proposal, packet, assessment, authorization, or refusal has `Act`, `Actor`, `Baseline`, `Inputs`, `Excluded`, and exactly one `Input-hash` per file on `Inputs`. An incomplete manifest voids the act.
+5. Confirm `baseline-b1.md` quotes the authorization digest, and that the authorization quotes the assessment digest, and that the assessment quotes the packet digest.
+6. Confirm packet A1's excluded list names `diagnosis-d1.md` and `proposal-c1.md`, and that those phrases from the diagnosis ("Cause claim") do not appear as the assessment's reasoning. The assessment may name the excluded filename.
+7. Do the same for packet A2 and diagnosis D2.
 
-A mismatch freezes the example. Do not "fix" a sealed file in place. A correction would be a new file, and this published example is already sealed.
+A mismatch freezes the example. Do not "fix" a sealed file in place. A correction would be a new file. The one exception is a pre-disclosure revision of the whole published example, which re-seals every record and is recorded in `.plan/provenance.md`. Revision 2 is such a re-seal; it supersedes the publication sealed in commit `80b085bf84f158da317444281520e39638e7b887`.
 
 ## Re-run an assessment
 

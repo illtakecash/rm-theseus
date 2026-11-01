@@ -88,21 +88,21 @@ Unknown labels are narrative, even if they look official. An act that needs a fa
 | Norm | `key = value`, one operative quantity, single line |
 | Restatement | Plain sentence containing every Norm value in the entry |
 | History | Non-operative memory |
-| Act | `propose`, `assess`, `authorize`, `refuse`, `observe`, `diagnose` |
+| Act | `propose`, `package`, `assess`, `authorize`, `refuse`, `observe`, `diagnose` |
 | Actor | Role or session id |
 | Baseline | Baseline id the act is valid against |
-| Inputs | Files the act actually used |
-| Input-hash | `filename sha256` |
-| Excluded | Files the protocol forbids this act to use |
+| Inputs | Files the act actually used. A packet's inputs are the files it copies |
+| Input-hash | `filename sha256`, exactly one line per file named on `Inputs` |
+| Excluded | Files the role table keeps out of this act's context, or `none` when that role is forbidden nothing |
 | Claims | Invariants the candidate claims to restore. Empty claims are allowed; over-claiming is not required |
 | Alternatives | Named alternatives conceived for this act |
 | Differs-from | Failed or refused alternative anchors this candidate must distinguish, or `none` |
 | Drops-label | Labels present on the previous realization and absent here, or `none` |
 | Verdict | `accept`, `accept-narrow`, `refuse` |
-| Scope | Invariants and anchors an authorization actually boards |
+| Scope | Invariant anchors an authorization accepts and part anchors it boards. Never a finding id |
 | Refusal-condition | What would have made the authorizer refuse, written even on an acceptance |
 | Opens | Finding id created by this act |
-| Finding | Finding id this act addresses |
+| Finding | Finding id this act addresses. On an authorization, the finding whose status the boarding changes |
 | Class | `tension` or `break` on an observation |
 | Seen | What the observer reports |
 | Checked-invariant | Invariant an observation actually checked |
@@ -209,7 +209,7 @@ Packets, assessments, authorizations, and refusals are review artifacts. Diagnos
 | Proposer | Baseline, intent slice, observations, prior outcome records, its own diagnosis | Diagnosis, candidate entry, proposal envelope |
 | Clerk | File names, hashes, label lines. Not a judge of sufficiency | Packets, hash checks, derived finding fold, review-due list |
 | Assessor | The packet only | Assessment |
-| Authorizer | Assessment, proposal envelope (rationale included), candidate entry, alternatives already on the record | Authorization or refusal |
+| Authorizer | Assessment, proposal envelope (rationale included), candidate entry, the realizations it would replace, alternatives already on the record. Not the diagnosis | Authorization or refusal |
 | Observer | The baseline it claims to look at, and the world | Observation. Diagnosis text is excluded |
 | Intent author | The same as authorizer, and only for intent revisions | Intent entry replacement |
 
@@ -217,7 +217,17 @@ The fixture's intent author and authorizer are the same role, `harbor-master`. T
 
 ### Contextual execution
 
-Every act begins with a manifest: `Act`, `Actor`, `Baseline`, `Inputs`, `Input-hash` once hashes exist, and `Excluded`. The manifest is how a later reader knows what "context" meant for that act. An act without a manifest is void.
+An **act** is a file whose `Kind` is `observation`, `diagnosis`, `proposal`, `packet`, `assessment`, `authorization`, or `refusal`. Every act begins with a complete manifest:
+
+- `Act` and `Actor`
+- `Baseline`, the baseline id the act is valid against
+- `Inputs`, every file the act actually used. For a packet, that is the files it copies
+- one `Input-hash` line per file on `Inputs`, and no `Input-hash` for a file not on `Inputs`
+- `Excluded`, the files the role table keeps out of that role's context. For a packet, this is the assessor's exclusion list, because the packet is the assessor's whole context. `none` is legal only for a role that is forbidden nothing, which in this protocol is the proposer
+
+There are no per-kind exceptions. The manifest is how a later reader knows what "context" meant for that act. An act whose manifest is missing or incomplete is void, and a void act cannot be quoted: not as the assessment an authorization relies on, not as the authorization a baseline's `Installed-by` names, and not as an observation that confirms or closes anything. A packet records its source hashes on `Input-hash`; `Source` is not a label and is narrative if it appears.
+
+Files that are not acts carry no manifest. Intent and part entries are canon. A baseline carries `Previous`, `Previous-hash` after origin, `Installed-by`, and `Includes` instead, and is valid only through the authorization it quotes. Projections and re-evaluations carry `Source-hash` and `Non-authoritative: true` and are never inputs to an assessment.
 
 The proposer is supposed to be contextual. Hiding the incident from the proposer would make the proposal performative. The proposer's diagnosis is preserved as its own file so the chain of thought is inspectable after the fact.
 
@@ -233,7 +243,7 @@ The packet **includes**:
 - the current realizations of the affected part and of parts named by its `Depends-on` and `Does-not-depend-on`
 - the candidate entry
 - the triggering observation and any earlier outcome observations on the same finding
-- source hashes for each of those
+- an `Inputs` line naming each of those files, and one `Input-hash` line per file
 
 The packet **excludes**:
 
@@ -273,7 +283,9 @@ An authorization is valid when all of the following hold:
 - `Actor` is the role named by the intent entry that governs baseline moves
 - it quotes the assessment body hash, and that hash matches the assessment bytes
 - the assessment is not void
-- `Scope` names only invariants the assessment marked `pass`
+- `Finding` names the finding the boarding addresses
+- `Scope` names only invariant anchors the assessment marked `pass`, plus the part anchors whose candidate the assessment judged. It does not name the finding
+- its own manifest is complete, including `Excluded`
 - `Refusal-condition` is filled in, including on an acceptance
 - `Alternatives` names each alternative the proposal conceived, with a status
 - it does not rewrite the assessment
@@ -286,6 +298,7 @@ Narrow authorization is a normal outcome, not a soft failure. The fixture's firs
 
 ### What the clerk checks before an act can be quoted
 
+- the manifest is complete: `Act`, `Actor`, `Baseline`, `Inputs`, `Excluded`, and exactly one `Input-hash` per file on `Inputs`
 - every `Input-hash` matches the file
 - the assessment's inputs are the packet hash and nothing else
 - the packet's excluded list contains the diagnosis and the proposal
@@ -325,14 +338,14 @@ Walk the seal log from genesis. For each finding id:
 | Condition in order | Derived status |
 | --- | --- |
 | An observation or authorization names `Opens` that id | `open` |
-| An authorization with `accept` or `accept-narrow` names the finding in `Scope`, and a later baseline `Installed-by` quotes that authorization and `Includes` the candidate hash | `implemented` for that scope only |
-| A later observation names the finding, quotes that baseline hash, names `Checked-invariant` inside the authorized scope, and `Result: confirmed` | `closed-confirmed` for those invariants only |
-| A refusal names the candidate | candidate is `refused`; baseline unchanged |
-| A later observation quotes the still-current baseline and `Result: unchanged` | that candidate is `closed-failed` |
+| An authorization with `accept` or `accept-narrow` names the id on `Finding`, and a later baseline `Installed-by` quotes that authorization and `Includes` the candidate hash | `implemented` for the invariant anchors on that authorization's `Scope` only |
+| A later observation names the id on `Finding`, quotes that baseline on `Input-hash`, names `Checked-invariant` inside the invariant anchors of the authorized `Scope`, and has `Result: confirmed` | `closed-confirmed` for those invariants only |
+| A refusal with `Verdict: refuse` quotes the candidate file on `Input-hash` | candidate is `refused`; baseline unchanged |
+| A later observation on the same `Finding` quotes the still-current baseline and that refusal on `Input-hash`, and has `Result: unchanged` | that candidate is `closed-failed` |
 | A `closed-confirmed` scope is smaller than the finding | the finding stays `open` for the unmet invariants |
 | A later break observation names an invariant previously confirmed | the later observation wins; the finding reopens; the earlier observation stays in the log |
 
-Two clerks who follow this table against the same log derive the same status. The folded register in the fixture is a projection of this table. If the projection disagrees with the walk, the walk wins and the projection is discarded.
+Every condition reads labeled lines only: the finding id comes from `Finding` or `Opens`, never from `Scope`, and the invariants come from `Scope` and `Checked-invariant`. An act that fails the clerk's manifest check does not satisfy any row. Two clerks who follow this table against the same log derive the same status. The folded register in the fixture is a projection of this table. If the projection disagrees with the walk, the walk wins and the projection is discarded.
 
 ### Review triggers
 
@@ -472,7 +485,7 @@ In-world roles in those files were written by this session as an illustration. T
 2. **Diagnose.** `diagnosis-d1` claims the cause is the missing dependency edge and recommends a new notice. That file is listed on the packet's `Excluded` line. The packet does not contain it.
 3. **Correct.** `p-notice-c1` is a full replacement entry: shown limit 10, restatement agrees, `Depends-on: P-LOAD`. `proposal-c1` claims only `INV-2`. It names `ALT-leave-sign` and `ALT-duty-on-notice`, and it defers the second. The rationale, which the assessor does not get, talks as if the incident were over. The claim line does not.
 4. **Assess.** The packet holds the intent, the three origin parts, the candidate entry, and the observation, plus hashes. `assessment-a1` marks `INV-2` pass, `RULE-DEP` pass, `INV-3` pass, and `INV-1` unmet, because nothing in the candidate changes the crew step and the observation already recorded an overload. Verdict is `accept-narrow`. The assessment contains no replacement wording.
-5. **Authorize.** `harbor-master` accepts scope `INV-2` and `P-NOTICE` only, writes a refusal-condition (a claim that `INV-1` was fully repaired would have been refused), records `ALT-leave-sign` as refused for this cycle and `ALT-duty-on-notice` as deferred, and opens `F2` for the missing count.
+5. **Authorize.** `harbor-master` names `F1` on `Finding`, accepts scope `INV-2` and `P-NOTICE` only, writes a refusal-condition (a claim that `INV-1` was fully repaired would have been refused), records `ALT-leave-sign` as refused for this cycle and `ALT-duty-on-notice` as deferred, and opens `F2` for the missing count.
 6. **Implement.** `baseline-b1` points `P-NOTICE` at `p-notice-c1` and points the other two parts at the origin file. `Installed-by` quotes the authorization hash.
 7. **Observe.** `observation-o2` checks the notice against `P-LOAD` under baseline `B1` and confirms `INV-2` only. It does not claim a counted sailing.
 8. **Re-evaluate.** Derived status: `F1` is `closed-confirmed` for `INV-2` and stays open as `F2` for `INV-1`. No dependent is review-due, because nothing aboard depends on `P-NOTICE`. The new edge means a later change to `P-LOAD` would mark the notice review-due. That forward edge is the point of the repair.
