@@ -46,4 +46,4 @@ Status: Sealed
 - Parent commits/artifacts: Starting commit `2031b30c0c5186d56e238fb4250e5ce74d6a5bcf`. Scaffold commit observed for this path `6b54a390610eb286872cabb9d0e01394e2988e83`. Pre-existing artifacts in force: `README.md`, `.plan/README.md`, and the empty section skeletons this session replaced in the three planning files.
 - Sealed timestamp and commit: Content freeze `2026-11-01T20:13:18Z` (UTC), which is the timestamp on every fixture seal-log record. Design status Complete. Evaluation status Complete. This file's status is Sealed. The git commit that introduces these frozen bytes is recorded in the follow-up line below once that commit exists, so this recording does not change the design or evaluation digests.
 
-  Sealing commit: `PENDING-AFTER-COMMIT`
+  Sealing commit: `80b085bf84f158da317444281520e39638e7b887`. That commit introduces the frozen design, evaluation, and fixture bytes. A follow-up commit records this id in this line only and does not change those bytes.
