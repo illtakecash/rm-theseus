@@ -13,9 +13,14 @@ Before proposing a language, framework, repository structure, or orchestration e
 
 - Read `CHARTER.md`; identify ambiguity, contradictions, and missing authorization.
 - State which design decisions are genuinely necessary and which are conveniences.
-- Propose at least two materially distinct architectures, including a minimal protocol-first alternative with no resident service.
+- Propose at least two materially distinct architectures, including (A) document-first Markdown/review/ledger orchestration and (B) agent-native typed intent, decision, evidence, and outcome objects with explicit relationships and generated human-readable views. Include a minimal protocol-first alternative with no resident service, whether as a third design or a variant.
+- Treat representation as a first-class architectural decision: distinguish canonical computational state from human-facing projections. Do not assume prose, a graph database, embeddings, JSON files, or any specific storage engine is canonical before comparing alternatives.
+- Test whether each representation allows agents to traverse dependencies, challenge assumptions, preserve unexplored alternatives, and update relationships without repeatedly reconstructing causal structure from narrative.
+- Specify how the independent evaluator receives an enforceably restricted information subset; a shorter prompt alone is insufficient.
 - For each architecture, trace a complete feedback cycle: detect -> diagnose -> propose correction -> authorize -> implement -> observe -> re-evaluate. Identify who/what initiates the next iteration and how state survives process restarts.
-- Compare portability, verifiable isolation, operating cost, adoption friction, security, and maintainability.
+- Compare portability, verifiable isolation, operating cost, adoption friction, security, maintainability, machine addressability, incremental updates, and human auditability.
+- Identify possibility-space contraction: which alternatives become difficult to represent, discover, or evaluate under each option? Include explicit falsification criteria and a small comparative fixture.
+- Deliver a recommendation with evidence and tradeoffs, not a presumed victory for the agent-native option.
 - Explicitly identify assumptions inherited from any existing projects.
 - Deliver `.plan/phase-0-design-options.md`; **stop for review**. Do not write implementation code.
 
@@ -23,6 +28,8 @@ Before proposing a language, framework, repository structure, or orchestration e
 
 Define versioned, implementation-neutral schemas for:
 - intent baseline and authorized supersession lineage
+- typed identities and relationships among intent, constraints, decisions, alternatives, evidence, implementations, observations, and outcomes, if selected after Phase 0
+- deterministic, traceable human-readable projections from canonical state
 - review request and proposed change
 - evaluator input envelope and context-access policy
 - independent and contextual assessment
@@ -68,6 +75,7 @@ Build a dependency-light validator/comparator and a narrow evaluator-launch inte
 Stop and request human decision when:
 - charter authority is absent or contradictory;
 - a proposed solution needs project-specific core logic;
+- a proposed canonical representation is chosen without comparing document-first and agent-native options;
 - independent execution cannot be established;
 - an implementation decision silently modifies original intent;
 - the implementation plan relies on existing architecture solely because it is familiar;
