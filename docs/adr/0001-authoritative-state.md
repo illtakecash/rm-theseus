@@ -38,7 +38,7 @@ An authorization is valid only when all of these hold:
 - its actor holds the grant the ratified intent names
 - it cites non-void assessment(s)
 - it cites a sealed **view packet**: the exact bytes the human was shown, the record ids those bytes represent, and the renderer id and version
-- it names `finding`, `verdict` (`accept` or `accept-narrow`), and a `scope` listing the invariants accepted and the record ids that may be applied
+- it names `finding`, `verdict` (`accept`, `accept-narrow`, or `stop`), and a `scope` listing the invariants accepted and the record ids that may be applied
 - it states a `refusal_condition`
 - it lists the status of every alternative the proposal conceived
 
@@ -48,7 +48,8 @@ A refusal has the same shape and installs nothing. No delegated grant or pre-aut
 
 - **Independent assessor.** Receives only a sealed assessor packet: ratified intent slice, candidate, affected parts and relations, and triggering and prior observations. It excludes diagnosis, proposal rationale, alternatives, unsealed assessments, and projections. If the launcher cannot verify that, the assessment is `independence_unverified`, which is recorded and never relabelled. The contextual assessor uses full context and the ledger. Both are sealed before either sees the other.
 - **Observer.** Gets no diagnosis, prediction, or desired verdict, unless the observation cannot be specified without them. That exception is recorded. A coordinator links the sealed observation to predictions afterwards with an `observes` relation.
-- **Status is a fold over the log, per (finding, invariant).** The states are `open`, then `implemented` (authorized and in the current baseline), then `closed-confirmed` (only for invariants a later observation names as checked and confirmed). A later contrary observation reopens. A refused candidate becomes `closed-failed` once an observation shows the baseline unchanged. Review-level status is a derived summary and cannot hide open sub-findings.
+- **Status is a fold over the log, per (finding, invariant).** The states are `open`, then `implemented` (authorized and in the current baseline), then `closed-confirmed` (only for invariants a later observation names as checked and confirmed). A later contrary observation reopens. The only other terminal state is `closed-stopped`, which requires an authorization with verdict `stop` that states why no correction is warranted, what would falsify that, and when to revisit (charter §48). Review-level status is a derived summary and cannot hide open sub-findings.
+- **Candidate disposition is separate from finding status.** Each candidate has its own fold: `proposed`, `refused`, `implemented`, or `failed` (an observation shows it did not satisfy the invariant it was authorized for), plus `refusal_respected` once an observation shows the baseline unchanged after a refusal. A refused or failed candidate never closes or advances its finding. The finding stays `open` (or returns to it) until a later candidate is `closed-confirmed` or an authorized stop is recorded.
 - **Failed retries.** A proposal on a finding with a failed or refused candidate must cite it in `differs_from`, with a stated material difference. If the citation is missing, the proposal is invalid (mechanical). Semantic overlap is flagged for the assessor. It is not claimed as provable.
 
 ## Projections and human edits
@@ -84,7 +85,7 @@ A refusal has the same shape and installs nothing. No delegated grant or pre-aut
 
 1. Record schema, JCS hashing, and validator, with golden-hash tests.
 2. Log, replay, baseline chain, and `baseline_conflict` detection.
-3. Per-(finding, invariant) status fold, tested against Track A's derived-status table.
+3. Per-(finding, invariant) status fold and separate per-candidate disposition fold, tested against Track A's derived-status table, including a refused candidate that leaves its finding open.
 4. Renderer, assessor and view packets, stale detection, and the constrained-field `propose` parser.
 5. Isolation launcher interface plus a local adapter that emits `independence_unverified` when it cannot verify.
 6. Ferry fixture ported end to end: narrow accept in cycle 1, failed correction in cycle 2.
