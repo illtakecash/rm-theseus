@@ -32,27 +32,27 @@ nodes:
   C-DUAL:    {layer: what, ref: capabilities.md}
   C-COMPACT: {layer: what, ref: capabilities.md}
   # how
-  H-FIXTURE:   {layer: how, desc: "plain-file case: intent.md, decisions.jsonl (ordered, dated, one-line rationale each), state snapshot"}
+  H-FIXTURE:   {layer: how, desc: "plain-file case: intent.md, decisions.jsonl (ordered, dated; separate `fact` and `rationale` fields), state snapshot"}
   H-ASSESSOR:  {layer: how, desc: "trajectory assessor method: required output fields divergence, cause, excluded_alternative, recovery_or_revision; missing field = invalid"}
-  H-ISO:       {layer: how, desc: "launcher: fresh process, empty dir, only the independent packet; records what it could and could not restrict (network, model memory)"}
+  H-ISO:       {layer: how, desc: "launcher: fresh process, empty dir, only the independent packet (full decision facts, no rationale/diagnosis/conclusions); records what it could and could not restrict (network, model memory)"}
   H-SEAL:      {layer: how, desc: "sha256 of each first-pass output written before either is shown the other"}
   H-RECON:     {layer: how, desc: "reconciliation record: agreements, disagreements kept as dissent, evidence exchanged post-seal labeled fact vs justification"}
   H-GRADE:     {layer: how, desc: "grade against owner-sealed answer key; compare to plain-prompt baseline; no scalar score"}
-  H-PACKET:    {layer: how, desc: "loop packet: objective ref, graph slice, delta, unknowns, evidence refs, next action, pass criteria (implementation.md)"}
+  H-PACKET:    {layer: how, desc: "loop packet theseus.loop/0 and assessor packet theseus.assess/0 (implementation.md); bounded, delta-first; cost logged as a vector from B1"}
   H-CODEGRAPH: {layer: how, optional: true, desc: "adapter over @colbymchenry/codegraph (codegraph_explore MCP / CLI) for implementation-level evidence only"}
   H-LEDGER:    {layer: how, status: deferred, desc: "ADR 0001 sealed typed-record store, baseline chain, authorization validation"}
   # build (Rust reference implementation; see implementation.md)
   B0: {layer: build, desc: "fixtures: Theseus history (drift), negative control, consulting-os (held out); owner seals answer keys"}
-  B1: {layer: build, desc: "theseus CLI skeleton: load fixture, plain-prompt baseline run, seal, graph check (R1-R6)"}
+  B1: {layer: build, desc: "theseus CLI skeleton: load fixture, plain-prompt baseline run (not on held-out case), packet contract + cost vector logging, seal, graph check (R1-R6)"}
   B2: {layer: build, desc: "isolation launcher with honest isolation report"}
   B3: {layer: build, desc: "trajectory assessor (independent + contextual) and reconciliation"}
   B4: {layer: build, desc: "run + grade on Theseus history and negative control vs baseline"}
   B5: {layer: build, desc: "held-out consulting-os run, no tuning after unseal"}
   B6: {layer: build, desc: "correction loop: apply recovery to fixture state, re-run, failed correction keeps finding open"}
-  B7: {layer: build, desc: "loop packet emitter + compression/retention test"}
+  B7: {layer: build, desc: "full compression/retention benchmark vs full-document loops (packet contract already in use since B1/B3)"}
   B8: {layer: build, optional: true, desc: "CodeGraph adapter, auto-detected, core runs without it"}
   # decisions carried forward
-  D-ADR1:   {layer: decision, status: retained-deferred, ref: ../docs/adr/0001-authoritative-state.md, note: "ratified by Scott 2026-11-01; kept as the persistence direction; build deferred until a capability fails without it"}
+  D-ADR1:   {layer: decision, status: retained-deferred, ratification: "ratified 2026-11-01, unchanged; merging this plan does not alter it", ref: ../docs/adr/0001-authoritative-state.md, note: "ratified by Scott 2026-11-01; kept as the persistence direction; build deferred until a capability fails without it"}
   D-PHASE0: {layer: decision, status: challenged, ref: implementation.md (pre-2026-11-02 Phase 0), note: "multi-architecture comparison replaced by a detector vertical slice; Track A/B records retained as evidence, no new tournament"}
   D-TRACKS: {layer: decision, status: retained, ref: ../experiments/, note: "historical record; not authoritative"}
   D-RUST:   {layer: decision, status: proposed, note: "Rust reference implementation, per comment 6569865770; Scott has not yet confirmed directly with Grok Bot"}
@@ -75,14 +75,16 @@ edges:
   - {from: C-DUAL,    to: I-0,     type: serves, why: "I-0 requires context-aware plus genuinely independent assessment", evidence: [E-CHARTER]}
   - {from: C-DUAL,    to: P-ISO,   type: serves, why: "independence must be real, sealed, and labeled", evidence: [E-CHARTER]}
   - {from: C-DUAL,    to: P-DISSENT, type: serves, why: "two sealed passes are what make dissent observable", evidence: [E-CHARTER]}
+  - {from: C-DUAL,    to: P-TRAJ,  type: serves, why: "both passes must see the ordered decision facts, or the independent one cannot detect cumulative drift", evidence: [E-CTX]}
   - {from: C-COMPACT, to: P-PORT,  type: serves, why: "agent-native operation across vendors needs bounded context", assumption: "context cost is a binding constraint for agent loops; tested by V-COST"}
   # how -> what
   - {from: H-FIXTURE,  to: C-TRAJ,  type: implements, why: "trajectory needs an ordered decision history as input", evidence: [E-CTX]}
   - {from: H-ASSESSOR, to: C-TRAJ,  type: implements, why: "the detector itself; previously unspecified", evidence: [E-CTX, E-IND]}
   - {from: H-ASSESSOR, to: C-CAUSE, type: implements, why: "required `cause` field citing decision IDs", evidence: [E-IND]}
-  - {from: H-ASSESSOR, to: C-ALT,   type: implements, why: "required `excluded_alternative` field", assumption: "a prompted assessor can name alternatives never recorded; untested, V-ALT measures it"}
+  - {from: H-ASSESSOR, to: C-ALT,   type: implements, why: "required `excluded_alternative` field", assumption: "a prompted assessor can name alternatives never recorded; untested, V-DRIFT's excluded-alternative element measures it"}
   - {from: H-ASSESSOR, to: C-CORR,  type: implements, why: "required `recovery_or_revision` field", evidence: [E-IND]}
   - {from: H-ISO,      to: C-DUAL,  type: implements, why: "controls what the independent pass can see", evidence: [E-CHARTER]}
+  - {from: H-PACKET,   to: C-DUAL,  type: implements, why: "assessor packet defines the independence boundary: full trajectory facts, no inherited interpretation (V-BOUNDARY)", assumption: "fact/rationale split is clean enough on real histories; V-BOUNDARY and B0 fixtures test it"}
   - {from: H-SEAL,     to: C-DUAL,  type: implements, why: "proves neither first pass read the other", evidence: [E-CHARTER]}
   - {from: H-RECON,    to: C-DUAL,  type: implements, why: "keeps dissent after seal", evidence: [E-CHARTER]}
   - {from: H-GRADE,    to: P-EVAL,  type: serves,     why: "evaluator must be tested against a key it did not write and a plain baseline", evidence: [E-CTX]}
@@ -103,7 +105,9 @@ edges:
   - {from: B4, to: H-GRADE,    type: builds, why: "first demonstration on drift + negative control", evidence: [E-CTX, E-IND]}
   - {from: B5, to: H-GRADE,    type: builds, why: "held-out generalization check", evidence: [E-COS]}
   - {from: B6, to: H-ASSESSOR, type: builds, why: "re-evaluation after correction", evidence: [E-CHARTER]}
-  - {from: B7, to: H-PACKET,   type: builds, why: "compression requirement", evidence: [E-CHARTER]}
+  - {from: B1, to: H-PACKET,   type: builds, why: "compression shapes the architecture from the first slice, not as a retrofit", evidence: [E-CHARTER]}
+  - {from: B3, to: H-PACKET,   type: builds, why: "assessor packets and the C-DUAL boundary", evidence: [E-CHARTER]}
+  - {from: B7, to: H-PACKET,   type: builds, why: "compression benchmark", evidence: [E-CHARTER]}
   - {from: B8, to: H-CODEGRAPH, type: builds, why: "optional implementation evidence", evidence: [E-CODEGRAPH]}
   # decisions
   - {from: D-ADR1,   to: H-LEDGER, type: specifies, why: "ADR 0001 is the chosen shape if/when persistence is needed", evidence: [E-CTX]}
@@ -120,3 +124,4 @@ edges:
 #   weakly supported: C-ALT (method is assumption only), C-COMPACT and P-PORT (assumption only until V-COST and a second project run),
 #                     P-SELF (served only by using Theseus's own history as a fixture; no ongoing self-review mechanism yet).
 #   deferred with no live path to I-0: H-LEDGER (by design).
+# Rev 2 (2026-11-02, GPT-6 review): ad hoc check of R1-R4 + node/V-ID references passes (no orphans, no cycles, every edge has why + one of evidence/assumption).
