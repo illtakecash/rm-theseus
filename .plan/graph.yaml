@@ -1,0 +1,122 @@
+# Theseus purpose graph. Stable IDs; typed edges; every edge says why it exists.
+# Layers: why (I-*, P-*) -> what (C-*) -> how (H-*) -> build (B-*) -> evidence (E-*).
+# D-* are recorded decisions with status retained | deferred | challenged | proposed.
+#
+# Rules (checked by B1's `graph check`, until then by hand):
+#   R1 every H, B reaches a why node (I-0 or P-*) via `serves`/`implements`/`builds` edges.   (no orphans)
+#   R2 every C has >=1 H implementing it and >=1 V test in validation.md. (no unsupported goals)
+#   R3 `serves`/`implements`/`builds` edges form a DAG.                    (no circular self-justification)
+#   R4 every edge has `why` and exactly one of `evidence:` or `assumption:`.
+#   R5 any edge may be targeted by a `challenges` edge; a challenged edge stays visible until resolved.
+#   R6 nothing derived from CodeGraph or from implementation may create or modify I-* or P-* nodes.
+schema: theseus.purpose-graph/0
+status: proposed   # not ratified; Scott ratifies
+
+nodes:
+  # why
+  I-0:            {layer: why,  ref: intent.md#i-0-origin-immutable}
+  P-TRAJ:         {layer: why,  ref: intent.md}
+  P-ISO:          {layer: why,  ref: intent.md}
+  P-NOMUT:        {layer: why,  ref: intent.md}
+  P-NOAUTH:       {layer: why,  ref: intent.md}
+  P-DISSENT:      {layer: why,  ref: intent.md}
+  P-SELF:         {layer: why,  ref: intent.md}
+  P-EVAL:         {layer: why,  ref: intent.md}
+  P-PORT:         {layer: why,  ref: intent.md}
+  P-DETECT-FIRST: {layer: why,  ref: intent.md, status: proposed}
+  # what
+  C-TRAJ:    {layer: what, ref: capabilities.md}
+  C-CAUSE:   {layer: what, ref: capabilities.md}
+  C-ALT:     {layer: what, ref: capabilities.md}
+  C-CORR:    {layer: what, ref: capabilities.md}
+  C-DUAL:    {layer: what, ref: capabilities.md}
+  C-COMPACT: {layer: what, ref: capabilities.md}
+  # how
+  H-FIXTURE:   {layer: how, desc: "plain-file case: intent.md, decisions.jsonl (ordered, dated, one-line rationale each), state snapshot"}
+  H-ASSESSOR:  {layer: how, desc: "trajectory assessor method: required output fields divergence, cause, excluded_alternative, recovery_or_revision; missing field = invalid"}
+  H-ISO:       {layer: how, desc: "launcher: fresh process, empty dir, only the independent packet; records what it could and could not restrict (network, model memory)"}
+  H-SEAL:      {layer: how, desc: "sha256 of each first-pass output written before either is shown the other"}
+  H-RECON:     {layer: how, desc: "reconciliation record: agreements, disagreements kept as dissent, evidence exchanged post-seal labeled fact vs justification"}
+  H-GRADE:     {layer: how, desc: "grade against owner-sealed answer key; compare to plain-prompt baseline; no scalar score"}
+  H-PACKET:    {layer: how, desc: "loop packet: objective ref, graph slice, delta, unknowns, evidence refs, next action, pass criteria (implementation.md)"}
+  H-CODEGRAPH: {layer: how, optional: true, desc: "adapter over @colbymchenry/codegraph (codegraph_explore MCP / CLI) for implementation-level evidence only"}
+  H-LEDGER:    {layer: how, status: deferred, desc: "ADR 0001 sealed typed-record store, baseline chain, authorization validation"}
+  # build (Rust reference implementation; see implementation.md)
+  B0: {layer: build, desc: "fixtures: Theseus history (drift), negative control, consulting-os (held out); owner seals answer keys"}
+  B1: {layer: build, desc: "theseus CLI skeleton: load fixture, plain-prompt baseline run, seal, graph check (R1-R6)"}
+  B2: {layer: build, desc: "isolation launcher with honest isolation report"}
+  B3: {layer: build, desc: "trajectory assessor (independent + contextual) and reconciliation"}
+  B4: {layer: build, desc: "run + grade on Theseus history and negative control vs baseline"}
+  B5: {layer: build, desc: "held-out consulting-os run, no tuning after unseal"}
+  B6: {layer: build, desc: "correction loop: apply recovery to fixture state, re-run, failed correction keeps finding open"}
+  B7: {layer: build, desc: "loop packet emitter + compression/retention test"}
+  B8: {layer: build, optional: true, desc: "CodeGraph adapter, auto-detected, core runs without it"}
+  # decisions carried forward
+  D-ADR1:   {layer: decision, status: retained-deferred, ref: ../docs/adr/0001-authoritative-state.md, note: "ratified by Scott 2026-11-01; kept as the persistence direction; build deferred until a capability fails without it"}
+  D-PHASE0: {layer: decision, status: challenged, ref: implementation.md (pre-2026-11-02 Phase 0), note: "multi-architecture comparison replaced by a detector vertical slice; Track A/B records retained as evidence, no new tournament"}
+  D-TRACKS: {layer: decision, status: retained, ref: ../experiments/, note: "historical record; not authoritative"}
+  D-RUST:   {layer: decision, status: proposed, note: "Rust reference implementation, per comment 6569865770; Scott has not yet confirmed directly with Grok Bot"}
+  D-PR5:    {layer: decision, status: deferred, note: "first-pass-observations charter sentence; moot until C-DUAL exists"}
+  # evidence
+  E-CTX:       {layer: evidence, ref: "https://github.com/illtakecash/rm-theseus/issues/2#issuecomment-6564689616", desc: "contextual self-assessment: plan detects integrity violations, not goal drift"}
+  E-IND:       {layer: evidence, ref: "https://github.com/illtakecash/rm-theseus/issues/2#issuecomment-6564741903", desc: "independent assessor (partial isolation, same model family): same verdict; adds 'unverified isolation should block authorization'"}
+  E-CHARTER:   {layer: evidence, ref: ../CHARTER.md, desc: "proposed baseline, unratified"}
+  E-CODEGRAPH: {layer: evidence, ref: "illtakecash/rm-coding-agents-config: RightMinds Core/.agent-guidance/skills/codegraph/SKILL.md", desc: "package @colbymchenry/codegraph; MCP tool codegraph_explore; CLI explore/status/sync/init; negatives are hypotheses"}
+  E-COS:       {layer: evidence, ref: ../CHARTER.md#acceptance-criteria, desc: "consulting-os regression: governing inherited Python impl != making impls replaceable"}
+
+edges:
+  # what -> why
+  - {from: C-TRAJ,    to: I-0,     type: serves, why: "I-0's core verb is detecting departure despite defensible steps", evidence: [E-CTX, E-IND]}
+  - {from: C-TRAJ,    to: P-TRAJ,  type: serves, why: "per-change review cannot see cumulative drift", evidence: [E-CTX]}
+  - {from: C-CAUSE,   to: I-0,     type: serves, why: "correction needs to know which decisions compounded", assumption: "explanation is needed for correction, not just detection; I-0 implies but does not state it"}
+  - {from: C-ALT,     to: I-0,     type: serves, why: "I-0 names surfacing prematurely excluded alternatives", evidence: [E-CHARTER]}
+  - {from: C-CORR,    to: I-0,     type: serves, why: "I-0 names correction or authorized intent revision", evidence: [E-CHARTER]}
+  - {from: C-CORR,    to: P-NOMUT, type: serves, why: "revision must be explicit, never a silent overwrite", evidence: [E-CHARTER]}
+  - {from: C-DUAL,    to: I-0,     type: serves, why: "I-0 requires context-aware plus genuinely independent assessment", evidence: [E-CHARTER]}
+  - {from: C-DUAL,    to: P-ISO,   type: serves, why: "independence must be real, sealed, and labeled", evidence: [E-CHARTER]}
+  - {from: C-DUAL,    to: P-DISSENT, type: serves, why: "two sealed passes are what make dissent observable", evidence: [E-CHARTER]}
+  - {from: C-COMPACT, to: P-PORT,  type: serves, why: "agent-native operation across vendors needs bounded context", assumption: "context cost is a binding constraint for agent loops; tested by V-COST"}
+  # how -> what
+  - {from: H-FIXTURE,  to: C-TRAJ,  type: implements, why: "trajectory needs an ordered decision history as input", evidence: [E-CTX]}
+  - {from: H-ASSESSOR, to: C-TRAJ,  type: implements, why: "the detector itself; previously unspecified", evidence: [E-CTX, E-IND]}
+  - {from: H-ASSESSOR, to: C-CAUSE, type: implements, why: "required `cause` field citing decision IDs", evidence: [E-IND]}
+  - {from: H-ASSESSOR, to: C-ALT,   type: implements, why: "required `excluded_alternative` field", assumption: "a prompted assessor can name alternatives never recorded; untested, V-ALT measures it"}
+  - {from: H-ASSESSOR, to: C-CORR,  type: implements, why: "required `recovery_or_revision` field", evidence: [E-IND]}
+  - {from: H-ISO,      to: C-DUAL,  type: implements, why: "controls what the independent pass can see", evidence: [E-CHARTER]}
+  - {from: H-SEAL,     to: C-DUAL,  type: implements, why: "proves neither first pass read the other", evidence: [E-CHARTER]}
+  - {from: H-RECON,    to: C-DUAL,  type: implements, why: "keeps dissent after seal", evidence: [E-CHARTER]}
+  - {from: H-GRADE,    to: P-EVAL,  type: serves,     why: "evaluator must be tested against a key it did not write and a plain baseline", evidence: [E-CTX]}
+  - {from: H-PACKET,   to: C-COMPACT, type: implements, why: "bounded delta-first loop input", assumption: "packet retains governing intent; V-RETAIN tests it"}
+  - {from: H-CODEGRAPH, to: C-CAUSE, type: implements, why: "symbol/call evidence can show where a structural decision landed in code", assumption: "useful only for code-level drift; never a source of intent (R6)"}
+  - {from: H-LEDGER,   to: C-CORR,  type: implements, why: "multi-cycle state across sessions", assumption: "needed only once corrections span sessions; deferred until B6 shows it", status: deferred}
+  - {from: H-ASSESSOR, to: P-NOAUTH, type: serves, why: "assessor must return insufficient_evidence when the intent baseline is missing or unratified", assumption: "enforced by output schema in B3; not yet tested"}
+  - {from: H-FIXTURE,  to: P-SELF,   type: serves, why: "the first drift fixture is Theseus's own history", evidence: [E-CTX]}
+  - {from: B1,         to: P-DETECT-FIRST, type: serves, why: "plain-prompt baseline exists before any governance code", evidence: [E-CTX]}
+  # build -> how
+  - {from: B0, to: H-FIXTURE,  type: builds, why: "cases and sealed keys first, so we cannot grade on a key written after outputs", evidence: [E-CTX]}
+  - {from: B0, to: H-GRADE,    type: builds, why: "answer keys are grading inputs", evidence: [E-CTX]}
+  - {from: B1, to: H-SEAL,     type: builds, why: "seal is trivial and needed from run one", evidence: [E-CHARTER]}
+  - {from: B1, to: H-GRADE,    type: builds, why: "plain-prompt baseline is the comparison every later slice must beat", evidence: [E-CTX]}
+  - {from: B2, to: H-ISO,      type: builds, why: "real process isolation, honestly labeled", evidence: [E-IND]}
+  - {from: B3, to: H-ASSESSOR, type: builds, why: "the detector", evidence: [E-CTX]}
+  - {from: B3, to: H-RECON,    type: builds, why: "two passes need reconciliation", evidence: [E-CHARTER]}
+  - {from: B4, to: H-GRADE,    type: builds, why: "first demonstration on drift + negative control", evidence: [E-CTX, E-IND]}
+  - {from: B5, to: H-GRADE,    type: builds, why: "held-out generalization check", evidence: [E-COS]}
+  - {from: B6, to: H-ASSESSOR, type: builds, why: "re-evaluation after correction", evidence: [E-CHARTER]}
+  - {from: B7, to: H-PACKET,   type: builds, why: "compression requirement", evidence: [E-CHARTER]}
+  - {from: B8, to: H-CODEGRAPH, type: builds, why: "optional implementation evidence", evidence: [E-CODEGRAPH]}
+  # decisions
+  - {from: D-ADR1,   to: H-LEDGER, type: specifies, why: "ADR 0001 is the chosen shape if/when persistence is needed", evidence: [E-CTX]}
+  - {from: D-RUST,   to: B1,       type: constrains, why: "language of the reference implementation", assumption: "Scott wants Rust (relayed, not yet confirmed to Grok Bot)"}
+  # challenges (kept visible until resolved)
+  - {from: E-IND, to: D-ADR1,   type: challenges, why: "independent assessor: ADR 0001 ratified before the Phase 0 comparison it depended on", evidence: [E-IND], resolution: "open; this plan defers its build rather than reversing ratification"}
+  - {from: E-IND, to: H-ISO,    type: challenges, why: "independence_unverified should block any authorization", evidence: [E-IND], resolution: "adopted in validation.md V-ISO (label + block)"}
+  - {from: E-CTX, to: D-PHASE0, type: challenges, why: "architecture comparison displaced detection; vertical slice first", evidence: [E-CTX]}
+
+# Reverse-traversal findings at this revision (hand-checked; B1 automates):
+#   orphans (H/B not reaching a why node): none.
+#   first traversal found P-NOAUTH, P-SELF, P-DETECT-FIRST with no inbound edge; fixed with the three edges above
+#   (P-NOAUTH's support is still assumption only).
+#   weakly supported: C-ALT (method is assumption only), C-COMPACT and P-PORT (assumption only until V-COST and a second project run),
+#                     P-SELF (served only by using Theseus's own history as a fixture; no ongoing self-review mechanism yet).
+#   deferred with no live path to I-0: H-LEDGER (by design).

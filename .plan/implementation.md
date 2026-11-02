@@ -1,91 +1,55 @@
-# Theseus — Agent Implementation Plan
+# Implementation plan
 
-Status: **Planning only; no implementation authorization**  
-Depends on: human ratification of `CHARTER.md`.
+Status: **proposed; no code authorized.** Code starts only after Scott (a) ratifies or amends `CHARTER.md` and `intent.md`, (b) confirms Rust (D-RUST), and (c) approves opening slice issues. The previous ledger-first plan is preserved verbatim at [`525ac5e:.plan/implementation.md`](https://github.com/illtakecash/rm-theseus/blob/525ac5e/.plan/implementation.md); its dispositions are below.
 
-## Mission for the build agent
+Every slice cites the graph node it builds. If a slice can't name a capability and the test that shows it works, it doesn't get built.
 
-Design a standalone, portable architectural-drift review capability from first principles. Do **not** inherit Atlas, Maxwell, consulting-os, Cursor Cloud, or rm-coding-agents-config architecture. These are eventual consumers and test fixtures, not architectural authorities.
+## Order (Rust reference implementation, single `theseus` CLI crate, no services)
 
-Before proposing a language, framework, repository structure, or orchestration engine, articulate the minimal information and execution contracts needed to satisfy the charter.
+| Slice | Builds | Delivers | Done when |
+|---|---|---|---|
+| **B0** | H-FIXTURE, H-GRADE | Three cases in `fixtures/`: `theseus-history` (drift: objective, ~8 dated decisions from charter through ADR 0001 and slice list, plan snapshot), `control` (a short on-intent history), `consulting-os` (held out, decisions as recorded, not pre-diagnosed). Scott writes and seals (sha256 in `state.md`) an answer key per case before any run. | Keys sealed; hashes committed. |
+| **B1** | H-SEAL, H-GRADE | `theseus run --baseline`: one plain prompt (objective + current state + history) through a model adapter; output sealed. `theseus graph check` enforces R1–R6 on `graph.yaml`. | Baseline outputs exist for all three cases; graph check passes on this repo. |
+| **B2** | H-ISO | `theseus run --independent`: child process, empty temp dir, only the independent packet, network policy disclosed. Writes an isolation report (what was restricted, what wasn't). | Report is honest on at least the local adapter; `independence_unverified` is emitted when it can't be established. |
+| **B3** | H-ASSESSOR, H-RECON | Trajectory assessor in independent and contextual modes. Output schema requires `divergence`, `cause` (decision IDs), `excluded_alternative`, `recovery_or_revision`, or `insufficient_evidence`. Both sealed, then `theseus reconcile` records agreement and dissent. | Schema rejects a missing field; reconciliation never deletes a dissenting claim. |
+| **B4** | H-GRADE | **First vertical slice.** Run B3 on `theseus-history` and `control`; grade against sealed keys; compare to B1 baseline. | `validation.md` V-DRIFT, V-CTRL, V-BASE, V-ISO pass, or fail with evidence preserved. |
+| **B5** | H-GRADE | Held-out `consulting-os` run. No prompt or method change after unsealing its key. | V-HELD. |
+| **B6** | H-ASSESSOR | Correction loop: apply proposed recovery to the fixture's state, re-run, compare. Include one deliberately failed correction. | V-CORR. First point where H-LEDGER might be needed; decide then. |
+| **B7** | H-PACKET | Loop packet emitter (below) and the compression test. | V-COST, V-RETAIN. |
+| B8 (optional) | H-CODEGRAPH | Detect `@colbymchenry/codegraph` (MCP `codegraph_explore`, or CLI `npx --yes @colbymchenry/codegraph explore`/`status`); attach results as `E-*` evidence only. Core runs without it. | Same B4 result with and without it; no I/P node changes from it (R6). |
 
-## Phase 0 — Verify intent and challenge premises
+Proposed ownership, carried from the ADR 0001 split and open to GPT's counter: Grok Bot B0 (fixture assembly; keys are Scott's), B1, B3, B6; ChatGPT B2, B5, B7; B4 and B8 shared.
 
-- Read `CHARTER.md`; identify ambiguity, contradictions, and missing authorization.
-- State which design decisions are genuinely necessary and which are conveniences.
-- Propose at least two materially distinct architectures, including (A) document-first Markdown/review/ledger orchestration and (B) agent-native typed intent, decision, evidence, and outcome objects with explicit relationships and generated human-readable views. Include a minimal protocol-first alternative with no resident service, whether as a third design or a variant.
-- Treat representation as a first-class architectural decision: distinguish canonical computational state from human-facing projections. Do not assume prose, a graph database, embeddings, JSON files, or any specific storage engine is canonical before comparing alternatives.
-- Test whether each representation allows agents to traverse dependencies, challenge assumptions, preserve unexplored alternatives, and update relationships without repeatedly reconstructing causal structure from narrative.
-- Specify how the independent evaluator receives an enforceably restricted information subset; a shorter prompt alone is insufficient.
-- For each architecture, trace a complete feedback cycle: detect -> diagnose -> propose correction -> authorize -> implement -> observe -> re-evaluate. Identify who/what initiates the next iteration and how state survives process restarts.
-- Compare portability, verifiable isolation, operating cost, adoption friction, security, maintainability, machine addressability, incremental updates, and human auditability.
-- Identify possibility-space contraction: which alternatives become difficult to represent, discover, or evaluate under each option? Include explicit falsification criteria and a small comparative fixture.
-- Deliver a recommendation with evidence and tradeoffs, not a presumed victory for the agent-native option.
-- Explicitly identify assumptions inherited from any existing projects.
-- Deliver `.plan/phase-0-design-options.md`; **stop for review**. Do not write implementation code.
+**Deferred until a slice fails without it:** ADR 0001's store, JCS ids, baseline chain, authorization and grant validation, view packets, the `propose` parser, three-installation acceptance. Trigger to revisit: B6 cannot carry a finding across two sessions with plain files.
 
-## Phase 1 — Specify portable contracts (after approval)
+## Loop packet (H-PACKET)
 
-Define versioned, implementation-neutral schemas for:
-- intent baseline and authorized supersession lineage
-- typed identities and relationships among intent, constraints, decisions, alternatives, evidence, implementations, observations, and outcomes, if selected after Phase 0
-- deterministic, traceable human-readable projections from canonical state
-- review request and proposed change
-- evaluator input envelope and context-access policy
-- independent and contextual assessment
-- evidence exchange and reconciliation
-- authorization, provenance, and validation outcomes
-- persistent drift-ledger entries, corrective hypotheses, expected/observed outcomes, next-review triggers, and decision closure/reopening
+Every agent loop gets this and nothing else by default; more is pulled by ID on demand.
 
-Specify canonical serialization and hashing, failure states (including `independence_unverified`, `baseline_missing`, `authorization_missing`), and extensibility rules. Do not equate distinct models with independent context.
+```yaml
+packet: theseus.loop/0
+objective: I-0            # by ID; the agent resolves the text once, not per loop
+graph_slice: [C-TRAJ, H-ASSESSOR, B3]   # nodes this step touches, plus their direct edges
+delta: "since <ref>: what changed, <= 5 lines"
+unknowns: ["open questions blocking this step"]
+evidence: [E-CTX]         # refs, not contents
+next_action: "one verb phrase"
+pass: [V-DRIFT]           # which validation.md criteria decide this step
+budget: {packet_tokens_max: 600}
+```
 
-## Phase 2 — Minimal reference implementation (after approval)
+Rules: delta-first (never re-send unchanged docs); stable IDs only; no charter or ADR text inside a packet; progressive disclosure (an agent asks for `node:<ID>` or `ref:<path>` when it needs more, and each pull counts toward V-COST).
 
-Build a dependency-light validator/comparator and a narrow evaluator-launch interface. Keep model and runtime adapters separate. Ensure the isolated reviewer cannot read implementation repository, previous agent conversation, or contextual assessment before sealing its first output. Validate isolation evidence rather than accepting an unverified declaration.
+## Dispositions of prior decisions
 
-## Phase 3 — Closed-loop execution (after approval)
-
-- Implement portable append-only or revision-linked drift ledger semantics, independent of storage backend.
-- Carry review IDs, parent IDs, pinned baseline IDs, and unresolved findings across iterations.
-- Define how corrections are proposed and authorized, and how post-implementation observations are attached.
-- Compare predicted with observed outcomes, detect ineffective or harmful corrections, and automatically identify a due review without assuming a resident daemon.
-- Define bounded iteration and escalation: no infinite agent loops, no silent acceptance, no unapproved implementation.
-- Test a failed first correction and subsequent successful correction, plus reopening of a previously closed decision.
-
-## Phase 4 — Integration without capture
-
-- Integrate with `rm-coding-agents-config` as a distribution consumer, not a core dependency.
-- Validate with consulting-os historical drift and an unrelated synthetic fixture.
-- Demonstrate a second agent platform and a distinct execution environment without modifying core protocol or evaluation logic.
-- Run Theseus against its own design changes.
-- Run historical and seeded drift tests to evaluate false positives, missed drift, and evaluator convergence without collapsing all results to a scalar score.
-
-## Required deliverables per phase
-
-- Decisions and alternatives, including rejected alternatives and why
-- Assumptions and uncertainty
-- Explicit charter mapping (goal, principle, invariant, non-goal)
-- Independent/contextual findings when applicable
-- Provenance: agent identity, execution/session, originating task and human authorization, model/toolchain where available, validation, and parent commit/artifacts
-- Tests and documented limitations
-- Linked previous review, corrective action, observed result, remaining drift, and next review trigger
-
-## Non-negotiable stop conditions
-
-Stop and request human decision when:
-- charter authority is absent or contradictory;
-- a proposed solution needs project-specific core logic;
-- a proposed canonical representation is chosen without comparing document-first and agent-native options;
-- independent execution cannot be established;
-- an implementation decision silently modifies original intent;
-- the implementation plan relies on existing architecture solely because it is familiar;
-- a review has no specified feedback path, observation criterion, or next trigger;
-- an evaluator claims closed-loop success without checking observed outcomes.
-
-## First exercise
-
-Reconstruct the consulting-os episode as a test case: a competent agent improves controls around an inherited Python architecture, while the original objective was to make implementations disposable. Show how Theseus would distinguish local technical correctness from objective alignment, and what evidence would make it change its assessment. Then simulate a correction that fails to restore replaceability, feed that observation into a second review, and show how the next correction changes. The independent first pass must not inherit the previous implementation rationale.
-
-## Initial human decision requested
-
-Ratify or amend `CHARTER.md`, then review Phase 0 alternatives before authorizing code.
+| Prior item | Status | Why |
+|---|---|---|
+| CHARTER.md invariants 1–6, 8, 13 | retained | Map to P-* nodes. |
+| CHARTER.md invariants 7, 11, 12 (audit, closed loop, ledger) in current detail | deferred | Revisit at B6. |
+| CHARTER acceptance: three installs, two linked cycles | deferred | B4–B6 test the smaller claim first. |
+| ADR 0001 (ratified 2026-11-01) | retained as direction, build deferred | Unchanged file; challenged by E-IND (see `graph.yaml`). Reversing it is Scott's call, and this plan doesn't. |
+| Phase 0 multi-architecture comparison | challenged | Replaced by the B4 vertical slice; Track A/B stay as records. |
+| Phase 1 schemas and canonical hashing first | deferred | Only sha256 sealing of outputs is kept (B1). |
+| "First exercise" (consulting-os with failed correction) | retained | Becomes B5 + B6. |
+| PR #5 charter sentence | deferred | Moot until B3 exists. |
+| Stop conditions | retained | Plus: stop if B4 shows the plain baseline matches the full method. |
