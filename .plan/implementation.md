@@ -1,115 +1,76 @@
-# Theseus — Agent Implementation Plan
+# Implementation plan
 
-Status: **Planning only; no implementation authorization**  
-Depends on: human ratification of `CHARTER.md`.
+Status: **proposed; no code authorized.** Code starts only after Scott (a) ratifies or amends `CHARTER.md` and `intent.md`, (b) confirms Rust (D-RUST, done 2026-11-02), and (c) approves opening slice issues.
 
-## Reconciliation with ADR 0001 (proposed, 2026-11-01)
+**Approving this plan is not ratification.** Scott merging this PR adopts it as the working *proposed* plan. It does not ratify `CHARTER.md`, `intent.md`, any P-* node, or any change to ADR 0001, and it does not authorize implementation; each of those needs its own explicit decision from Scott. ADR 0001 keeps its historical status (ratified 2026-11-01, unchanged file); only its *implementation* disposition is challenged/deferred here. The previous ledger-first plan is preserved verbatim at [`525ac5e:.plan/implementation.md`](https://github.com/illtakecash/rm-theseus/blob/525ac5e/.plan/implementation.md); its dispositions are below.
 
-Phase 0 below is complete and kept for history. Its two tracks produced Track A (PR #1) and Track B, and their synthesis is ADR 0001 (`docs/adr/0001-authoritative-state.md`, ratified by Scott and merged as 525ac5e). ADR 0001 answers Phase 0's representation question and fixes the Phase 1 contracts in outline. Phases 1 to 3 are now delivered by the ADR's build slices, in this order. Phase 4 integration and the full charter acceptance criteria (Atlas, an unrelated project, cloud agents, a second platform) come after the MVP and are not claimed by it.
+Every slice cites the graph node it builds. If a slice can't name a capability and the test that shows it works, it doesn't get built.
 
-### Gate
+## Order (Rust reference implementation, single `theseus` CLI crate, no services)
 
-Nothing below starts until Scott has (1) ratified `CHARTER.md`, (2) chosen the reference language and runtime, and (3) approved opening the slice issues. Before that, only documents like this one may change, and they stay non-authoritative.
-
-### Dependency-ordered MVP
-
-| Step | Slice | Depends on | Acceptance check |
+| Slice | Builds | Delivers | Done when |
 |---|---|---|---|
-| V1 | Thin vertical slice through 1, 2, 3 (below) | gate | One scripted cycle (origin intent, finding, candidate, accept authorization, baseline install, confirming observation) replays from `log.jsonl` to `closed-confirmed`. Golden hashes are byte-stable across two runs. A one-byte edit to any record makes replay fail with `invalid_record`. Assessments are recorded `independence_unverified` and never relabelled. |
-| 1 | Schema, JCS hashing, validator | V1 | Golden-hash vectors for every record kind; every ADR validity rule has a failing example. |
-| 2 | Log, replay, baseline chain, `baseline_conflict` | 1 | Two heads block new boardings; a resolution citing only one head is rejected. |
-| 3 | Finding fold and candidate fold | 2 | Matches Track A's derived-status table; a refused candidate leaves its finding `open`; a `stop` missing `falsifier` is rejected. |
-| 4 | Renderer, packets, stale detection, `propose` parser | 1, 2 | Packet bytes that don't hash to the sealed value, or mismatched source ids, invalidate the authorization even when the renderer version matches. |
-| 5 | Isolation launcher interface and local adapter | 4 | The assessor packet excludes diagnosis, rationale, and alternatives; unverifiable isolation yields `independence_unverified`. |
-| 6 | Ferry fixture end to end | 1 to 5 | Narrow accept in cycle 1, failed correction in cycle 2, retry cites `differs_from`. |
-| 7 | consulting-os fixture | 6 | D1, failed C1, C2, reopen, without rewriting the baseline. |
-| 8 | Theseus reviews a change to itself | 1 to 7, ratified charter as origin | The ratified charter is the origin baseline; the change runs through the same validator. |
+| **B0** | H-FIXTURE, H-GRADE | Three cases in `fixtures/`: `theseus-history` (drift: objective, ~8 dated decisions from charter through ADR 0001 and slice list, plan snapshot), `control` (a short on-intent history), `consulting-os` (held out, decisions as recorded, not pre-diagnosed). Each decision record splits `fact` (what was decided, when, by whom, what changed) from `rationale`, so the independent packet can keep the trajectory and drop the justification. Scott writes and seals (sha256 in `state.md`) an answer key per case before any run. | Keys sealed; hashes committed. |
+| **B1** | H-SEAL, H-GRADE, H-PACKET | `theseus run --baseline`: one plain prompt (objective + current state + history) through a model adapter; output sealed. Defines `theseus.loop/0` and the assessor packet types (below), validates packets against the budget, and records the V-COST vector on every run. `theseus graph check` enforces R1–R6 on `graph.yaml`. | Baseline outputs exist for `theseus-history` and `control` only (`consulting-os` stays unrun until B5); packet schema validates; cost vector logged; graph check passes on this repo. |
+| **B2** | H-ISO | `theseus run --independent`: child process, empty temp dir, only the independent packet, network policy disclosed. Writes an isolation report (what was restricted, what wasn't). | Report is honest on at least the local adapter; `independence_unverified` is emitted when it can't be established. |
+| **B3** | H-ASSESSOR, H-RECON, H-PACKET | Trajectory assessor in independent and contextual modes, each fed only its assessor packet (delta-first, bounded); V-BOUNDARY lint runs on the independent packet. Output schema requires `divergence`, `cause` (decision IDs), `excluded_alternative`, `recovery_or_revision`, or `insufficient_evidence`. Both sealed, then `theseus reconcile` records agreement and dissent. | Schema rejects a missing field; V-BOUNDARY passes; reconciliation never deletes a dissenting claim. |
+| **B4** | H-GRADE | **First vertical slice.** Run B3 on `theseus-history` and `control`; grade against sealed keys; compare to B1 baseline. | `validation.md` V-DRIFT, V-CTRL, V-BASE, V-ISO pass, or fail with evidence preserved. |
+| **B5** | H-GRADE | Method frozen (commit recorded), then the first-ever model runs on held-out `consulting-os`: baseline and method. No prompt or method change after unsealing its key. Starts only after V-BASE passes, or Scott decides how to proceed after it fails. | V-HELD, plus a V-BASE-style comparison on this case. |
+| **B6** | H-ASSESSOR | Correction loop: apply proposed recovery to the fixture's state, re-run, compare. Include one deliberately failed correction. | V-CORR. First point where H-LEDGER might be needed; decide then. |
+| **B7** | H-PACKET | Full compression benchmark: packet loops vs. full-document loops on the same tasks, using the packet contract already in use since B1/B3. | V-COST, V-RETAIN. |
+| B8 (optional) | H-CODEGRAPH | Detect `@colbymchenry/codegraph` (MCP `codegraph_explore`, or CLI `npx --yes @colbymchenry/codegraph explore`/`status`); attach results as `E-*` evidence only. Core runs without it. | Same B4 result with and without it; no I/P node changes from it (R6). |
 
-V1 is the first executable vertical slice. It proves the core loop (record, hash, log, fold) before any projection or launcher exists, and slices 1 to 3 then harden it. Owners are as in ADR 0001.
+Proposed ownership, carried from the ADR 0001 split and open to GPT's counter: Grok Bot B0 (fixture assembly; keys are Scott's), B1, B3, B6; ChatGPT B2, B5, B7; B4 and B8 shared.
 
-## Mission for the build agent
+**Deferred until a slice fails without it:** ADR 0001's store, JCS ids, baseline chain, authorization and grant validation, view packets, the `propose` parser, three-installation acceptance. Trigger to revisit: B6 cannot carry a finding across two sessions with plain files.
 
-Design a standalone, portable architectural-drift review capability from first principles. Do **not** inherit Atlas, Maxwell, consulting-os, Cursor Cloud, or rm-coding-agents-config architecture. These are eventual consumers and test fixtures, not architectural authorities.
+## Loop packet (H-PACKET)
 
-Before proposing a language, framework, repository structure, or orchestration engine, articulate the minimal information and execution contracts needed to satisfy the charter.
+Every agent loop gets this and nothing else by default; more is pulled by ID on demand.
 
-## Phase 0 — Verify intent and challenge premises
+```yaml
+packet: theseus.loop/0
+objective: I-0            # by ID; the agent resolves the text once, not per loop
+graph_slice: [C-TRAJ, H-ASSESSOR, B3]   # nodes this step touches, plus their direct edges
+delta: "since <ref>: what changed, <= 5 lines"
+unknowns: ["open questions blocking this step"]
+evidence: [E-CTX]         # refs, not contents
+next_action: "one verb phrase"
+pass: [V-DRIFT]           # which validation.md criteria decide this step
+budget: {packet_tokens_max: 600}
+```
 
-- Read `CHARTER.md`; identify ambiguity, contradictions, and missing authorization.
-- State which design decisions are genuinely necessary and which are conveniences.
-- Propose at least two materially distinct architectures, including (A) document-first Markdown/review/ledger orchestration and (B) agent-native typed intent, decision, evidence, and outcome objects with explicit relationships and generated human-readable views. Include a minimal protocol-first alternative with no resident service, whether as a third design or a variant.
-- Treat representation as a first-class architectural decision: distinguish canonical computational state from human-facing projections. Do not assume prose, a graph database, embeddings, JSON files, or any specific storage engine is canonical before comparing alternatives.
-- Test whether each representation allows agents to traverse dependencies, challenge assumptions, preserve unexplored alternatives, and update relationships without repeatedly reconstructing causal structure from narrative.
-- Specify how the independent evaluator receives an enforceably restricted information subset; a shorter prompt alone is insufficient.
-- For each architecture, trace a complete feedback cycle: detect -> diagnose -> propose correction -> authorize -> implement -> observe -> re-evaluate. Identify who/what initiates the next iteration and how state survives process restarts.
-- Compare portability, verifiable isolation, operating cost, adoption friction, security, maintainability, machine addressability, incremental updates, and human auditability.
-- Identify possibility-space contraction: which alternatives become difficult to represent, discover, or evaluate under each option? Include explicit falsification criteria and a small comparative fixture.
-- Deliver a recommendation with evidence and tradeoffs, not a presumed victory for the agent-native option.
-- Explicitly identify assumptions inherited from any existing projects.
-- Deliver `.plan/phase-0-design-options.md`; **stop for review**. Do not write implementation code.
+Rules: delta-first (never re-send unchanged docs); stable IDs only; no charter or ADR text inside a packet; progressive disclosure (an agent asks for `node:<ID>` or `ref:<path>` when it needs more, and each pull counts toward V-COST `retrieval_tokens`). Every run logs `{input_tokens, retrieval_tokens, output_tokens, reconstruction_calls}`; these are never added together.
 
-## Phase 1 — Specify portable contracts (after approval)
+## Assessor packets (C-DUAL boundary)
 
-Define versioned, implementation-neutral schemas for:
-- intent baseline and authorized supersession lineage
-- typed identities and relationships among intent, constraints, decisions, alternatives, evidence, implementations, observations, and outcomes, if selected after Phase 0
-- deterministic, traceable human-readable projections from canonical state
-- review request and proposed change
-- evaluator input envelope and context-access policy
-- independent and contextual assessment
-- evidence exchange and reconciliation
-- authorization, provenance, and validation outcomes
-- persistent drift-ledger entries, corrective hypotheses, expected/observed outcomes, next-review triggers, and decision closure/reopening
+Both assessors get the same trajectory. Only interpretation differs.
 
-Specify canonical serialization and hashing, failure states (including `independence_unverified`, `baseline_missing`, `authorization_missing`), and extensibility rules. Do not equate distinct models with independent context.
+```yaml
+packet: theseus.assess/0
+mode: independent | contextual
+objective: I-0                 # resolved text included once per run
+state: ref                     # current state snapshot
+outcomes: [ref]                # observed results
+decisions:                     # full ordered history, both modes
+  - {id: D1, date: 2026-10-31, actor: scott, fact: "what was decided / what changed"}
+  # contextual mode only, per decision:
+  #   rationale, diagnosis, prior assessments, conclusions
+budget: {input_tokens_max: <set at B1>}
+```
 
-## Phase 2 — Minimal reference implementation (after approval)
+Independent mode drops exactly `rationale`, `diagnosis`, `assessment`, `conclusion` and nothing else. V-BOUNDARY checks both directions (no leak, no starvation). A pull from an independent pass that would return an excluded field is refused and logged.
 
-Build a dependency-light validator/comparator and a narrow evaluator-launch interface. Keep model and runtime adapters separate. Ensure the isolated reviewer cannot read implementation repository, previous agent conversation, or contextual assessment before sealing its first output. Validate isolation evidence rather than accepting an unverified declaration.
+## Dispositions of prior decisions
 
-## Phase 3 — Closed-loop execution (after approval)
-
-- Implement portable append-only or revision-linked drift ledger semantics, independent of storage backend.
-- Carry review IDs, parent IDs, pinned baseline IDs, and unresolved findings across iterations.
-- Define how corrections are proposed and authorized, and how post-implementation observations are attached.
-- Compare predicted with observed outcomes, detect ineffective or harmful corrections, and automatically identify a due review without assuming a resident daemon.
-- Define bounded iteration and escalation: no infinite agent loops, no silent acceptance, no unapproved implementation.
-- Test a failed first correction and subsequent successful correction, plus reopening of a previously closed decision.
-
-## Phase 4 — Integration without capture
-
-- Integrate with `rm-coding-agents-config` as a distribution consumer, not a core dependency.
-- Validate with consulting-os historical drift and an unrelated synthetic fixture.
-- Demonstrate a second agent platform and a distinct execution environment without modifying core protocol or evaluation logic.
-- Run Theseus against its own design changes.
-- Run historical and seeded drift tests to evaluate false positives, missed drift, and evaluator convergence without collapsing all results to a scalar score.
-
-## Required deliverables per phase
-
-- Decisions and alternatives, including rejected alternatives and why
-- Assumptions and uncertainty
-- Explicit charter mapping (goal, principle, invariant, non-goal)
-- Independent/contextual findings when applicable
-- Provenance: agent identity, execution/session, originating task and human authorization, model/toolchain where available, validation, and parent commit/artifacts
-- Tests and documented limitations
-- Linked previous review, corrective action, observed result, remaining drift, and next review trigger
-
-## Non-negotiable stop conditions
-
-Stop and request human decision when:
-- charter authority is absent or contradictory;
-- a proposed solution needs project-specific core logic;
-- a proposed canonical representation is chosen without comparing document-first and agent-native options;
-- independent execution cannot be established;
-- an implementation decision silently modifies original intent;
-- the implementation plan relies on existing architecture solely because it is familiar;
-- a review has no specified feedback path, observation criterion, or next trigger;
-- an evaluator claims closed-loop success without checking observed outcomes.
-
-## First exercise
-
-Reconstruct the consulting-os episode as a test case: a competent agent improves controls around an inherited Python architecture, while the original objective was to make implementations disposable. Show how Theseus would distinguish local technical correctness from objective alignment, and what evidence would make it change its assessment. Then simulate a correction that fails to restore replaceability, feed that observation into a second review, and show how the next correction changes. The independent first pass must not inherit the previous implementation rationale.
-
-## Initial human decision requested
-
-Ratify or amend `CHARTER.md`, then review Phase 0 alternatives before authorizing code.
+| Prior item | Status | Why |
+|---|---|---|
+| CHARTER.md invariants 1–6, 8, 13 | retained | Map to P-* nodes. |
+| CHARTER.md invariants 7, 11, 12 (audit, closed loop, ledger) in current detail | deferred | Revisit at B6. |
+| CHARTER acceptance: three installs, two linked cycles | deferred | B4–B6 test the smaller claim first. |
+| ADR 0001 (ratified 2026-11-01) | retained as direction, build deferred | Unchanged file; challenged by E-IND (see `graph.yaml`). Reversing it is Scott's call, and this plan doesn't. |
+| Phase 0 multi-architecture comparison | challenged | Replaced by the B4 vertical slice; Track A/B stay as records. |
+| Phase 1 schemas and canonical hashing first | deferred | Only sha256 sealing of outputs is kept (B1). |
+| "First exercise" (consulting-os with failed correction) | retained | Becomes B5 + B6. |
+| PR #5 charter sentence | open, decide with charter | Current CHARTER excludes "implementation-specific history" from the independent first pass; C-DUAL gives that pass dated decision `fact`s. Either adopt PR #5's sentence (or an equivalent covering decision facts) at ratification, or C-DUAL must drop the trajectory from the independent pass. |
+| Stop conditions | retained | Plus: if V-BASE fails at B4 (ties, regressions, or both), stop before B5 and ask Scott. |
