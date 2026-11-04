@@ -24,16 +24,17 @@ Charter motto (CHARTER.md): *Replace the planks. Preserve the purpose.*
 | P-SELF | Theseus is reviewed by Theseus. | CHARTER inv. 8 |
 | P-EVAL | The evaluator is evaluated (seeded drift, negative controls, baselines). | CHARTER inv. 13 |
 | P-PORT | Portable across projects, languages, vendors, hosts. | I-0 "fully portable"; CHARTER inv. 1 |
-| P-DETECT-FIRST | No governance machinery is built until a detector beats a plain-prompt baseline. | Proposed in [Grok Bot assessment](https://github.com/illtakecash/rm-theseus/issues/2#issuecomment-6564689616); requested in [comment 6569865770](https://github.com/illtakecash/rm-theseus/issues/2#issuecomment-6569865770). **Proposed, awaiting Scott.** |
+| P-DETECT-FIRST | No governance machinery is built until a detector beats a plain-prompt baseline. | Proposed in [Grok Bot assessment](https://github.com/illtakecash/rm-theseus/issues/2#issuecomment-6564689616); requested in [comment 6569865770](https://github.com/illtakecash/rm-theseus/issues/2#issuecomment-6569865770). Adopted via I-1 on merge of PR #5. |
 
 ## Authorized changes (append-only)
 
 | ID | Date | Change | Authorized by | Status |
 |---|---|---|---|---|
 | I-0 | 2026-11-01 | Origin objective | Scott | origin |
+| I-1 | 2026-11-04 | Adopt P-DETECT-FIRST as a governing principle | Scott, relayed by ChatGPT in [PR #5 comment](https://github.com/illtakecash/rm-theseus/pull/5#issuecomment-6645519315); in force when Scott merges PR #5 | proposed for adoption |
 
 Decisions that are *not* intent changes (they serve intent, they don't redefine it) live in `graph.yaml` as `D-*` nodes, e.g. ADR 0001.
 
 ## Pending (not in force)
 
-- **I-1 (proposed):** adopt P-DETECT-FIRST as a governing principle. Needs Scott.
+- None. I-1 moves to the table above; it takes effect when Scott merges PR #5. Full ratification of this file and `CHARTER.md` stays a separate decision.
