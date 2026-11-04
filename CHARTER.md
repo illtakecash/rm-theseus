@@ -12,7 +12,7 @@ Detect when agents optimize an inherited implementation while losing sight of th
 ## Hard invariants
 
 1. **Portable by construction.** Core protocol, assessment schema, and evaluation methodology must be independent of project, language, repository layout, agent/model vendor, hosting environment, and version-control provider.
-2. **Two complementary perspectives.** The implementing agent evaluates with full project context; a separately executed evaluator initially sees only authorized intent, proposed change, and expected outcomes.
+2. **Two complementary perspectives.** The implementing agent evaluates with full project context; a separately executed evaluator initially sees only authorized intent, proposed change, expected outcomes, and ordered decision facts stripped of rationale (see Feedback state and closure).
 3. **Actual isolation.** Independence requires controlled information access and separately sealed initial assessments. Prompting an agent to ignore context is not isolation.
 4. **No silent purpose mutation.** Implementation decisions cannot redefine original intent. Authorized intent revisions are versioned and provenance-linked, never silently overwritten.
 5. **No invented authority.** Distinguish ratified goals, inferred goals, superseded goals, and missing/contradictory goals. Missing baseline means insufficient evidence, not a fabricated score.
@@ -22,7 +22,7 @@ Detect when agents optimize an inherited implementation while losing sight of th
 9. **Advisory reasoning, enforceable evidence.** Automated checks validate artifacts, isolation attestations, and required approvals; they do not claim to prove correctness of an LLM's judgment.
 10. **Adapters at the edge.** Platform integration belongs in adapters, not the portable protocol.
 11. **Closed-loop correction.** Reviews must feed diagnosed drift, corrective hypotheses, authorization, implementation observations, and measured outcomes into subsequent reviews. A review gate without outcome feedback is incomplete.
-12. **Persistent state without baseline capture.** Maintain a portable, versioned drift ledger of unresolved disagreements, corrective actions, observations, and review triggers. Ledger history informs evaluation but never silently replaces original intent or contaminates the independent evaluator's initial context.
+12. **Persistent state without baseline capture.** Maintain a portable, versioned drift ledger of unresolved disagreements, corrective actions, observations, and review triggers. Ledger history informs evaluation but never silently replaces original intent or contaminates the independent evaluator's initial context with rationale or assessments.
 13. **Evaluate the evaluator.** Test whether the process detects seeded and historical drift, false alarms, missed corrections, and convergence of the two perspectives. Preserve failure evidence and revisit the protocol when it stops finding meaningful distinctions.
 
 
@@ -47,7 +47,7 @@ Each review must reference prior relevant review IDs and ledger state, and produ
 
 A decision can close only with explicit acceptance criteria, evidence of the implemented outcome, disposition of unresolved findings, and authorized closure where required. Closure does not terminate monitoring. If no correction is warranted, record why, what would falsify that conclusion, and when to revisit it.
 
-Independent first-pass inputs exclude the drift ledger's implementation-specific history; relevant history can be disclosed during post-seal evidence exchange. The contextual agent uses the ledger from the outset. This asymmetry is intentional.
+Independent first-pass inputs exclude the drift ledger's interpretation: rationale, diagnoses, assessments, predictions, proposed alternatives, and conclusions. They may include ordered, dated decision facts (what was decided or changed, when, and which parts it affected), stated neutrally and without evaluative or causal wording, so the evaluator can judge the trajectory without inheriting why the implementer thought each step was right. Field separation alone does not establish neutrality; fact values are checked for interpretive leakage. Rationale and other history can be disclosed during post-seal evidence exchange. The contextual agent uses the full ledger from the outset. This asymmetry is intentional.
 
 ## Review triggers
 
