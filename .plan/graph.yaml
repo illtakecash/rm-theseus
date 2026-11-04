@@ -55,8 +55,8 @@ nodes:
   D-ADR1:   {layer: decision, status: retained-deferred, ratification: "ratified 2026-11-01, unchanged; merging this plan does not alter it", ref: ../docs/adr/0001-authoritative-state.md, note: "ratified by Scott 2026-11-01; kept as the persistence direction; build deferred until a capability fails without it"}
   D-PHASE0: {layer: decision, status: challenged, ref: implementation.md (pre-2026-11-02 Phase 0), note: "multi-architecture comparison replaced by a detector vertical slice; Track A/B records retained as evidence, no new tournament"}
   D-TRACKS: {layer: decision, status: retained, ref: ../experiments/, note: "historical record; not authoritative"}
-  D-RUST:   {layer: decision, status: decided, note: "Rust reference implementation; Scott confirmed directly with Grok Bot 2026-11-02 (recorded in issue #2 comment 6586505113)"}
-  D-PR5:    {layer: decision, status: open, note: "charter sentence admitting facts-only history to the independent first pass; C-DUAL as planned (decision facts in, rationale out) conflicts with the current CHARTER text without it, so it is decided with charter ratification, not after B3"}
+  D-RUST:   {layer: decision, status: retained, note: "Rust reference implementation; Scott confirmed directly with Grok Bot 2026-11-02 (recorded in issue #2 comment 6586505113)"}
+  D-PR5:    {layer: decision, status: proposed, note: "charter sentence admitting facts-only history to the independent first pass; C-DUAL as planned (decision facts in, rationale out) conflicts with the current CHARTER text without it, so it is decided with charter ratification, not after B3"}
   # evidence
   E-CTX:       {layer: evidence, ref: "https://github.com/illtakecash/rm-theseus/issues/2#issuecomment-6564689616", desc: "contextual self-assessment: plan detects integrity violations, not goal drift"}
   E-IND:       {layer: evidence, ref: "https://github.com/illtakecash/rm-theseus/issues/2#issuecomment-6564741903", desc: "independent assessor (partial isolation, same model family): same verdict; adds 'unverified isolation should block authorization'"}
