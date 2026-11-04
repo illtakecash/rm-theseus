@@ -55,8 +55,8 @@ nodes:
   D-ADR1:   {layer: decision, status: retained-deferred, ratification: "ratified 2026-11-01, unchanged; merging this plan does not alter it", ref: ../docs/adr/0001-authoritative-state.md, note: "ratified by Scott 2026-11-01; kept as the persistence direction; build deferred until a capability fails without it"}
   D-PHASE0: {layer: decision, status: challenged, ref: implementation.md (pre-2026-11-02 Phase 0), note: "multi-architecture comparison replaced by a detector vertical slice; Track A/B records retained as evidence, no new tournament"}
   D-TRACKS: {layer: decision, status: retained, ref: ../experiments/, note: "historical record; not authoritative"}
-  D-RUST:   {layer: decision, status: proposed, note: "Rust reference implementation, per comment 6569865770; Scott has not yet confirmed directly with Grok Bot"}
-  D-PR5:    {layer: decision, status: deferred, note: "first-pass-observations charter sentence; moot until C-DUAL exists"}
+  D-RUST:   {layer: decision, status: decided, note: "Rust reference implementation; Scott confirmed directly with Grok Bot 2026-11-02 (recorded in issue #2 comment 6586505113)"}
+  D-PR5:    {layer: decision, status: open, note: "charter sentence admitting facts-only history to the independent first pass; C-DUAL as planned (decision facts in, rationale out) conflicts with the current CHARTER text without it, so it is decided with charter ratification, not after B3"}
   # evidence
   E-CTX:       {layer: evidence, ref: "https://github.com/illtakecash/rm-theseus/issues/2#issuecomment-6564689616", desc: "contextual self-assessment: plan detects integrity violations, not goal drift"}
   E-IND:       {layer: evidence, ref: "https://github.com/illtakecash/rm-theseus/issues/2#issuecomment-6564741903", desc: "independent assessor (partial isolation, same model family): same verdict; adds 'unverified isolation should block authorization'"}
@@ -111,7 +111,7 @@ edges:
   - {from: B8, to: H-CODEGRAPH, type: builds, why: "optional implementation evidence", evidence: [E-CODEGRAPH]}
   # decisions
   - {from: D-ADR1,   to: H-LEDGER, type: specifies, why: "ADR 0001 is the chosen shape if/when persistence is needed", evidence: [E-CTX]}
-  - {from: D-RUST,   to: B1,       type: constrains, why: "language of the reference implementation", assumption: "Scott wants Rust (relayed, not yet confirmed to Grok Bot)"}
+  - {from: D-RUST,   to: B1,       type: constrains, why: "language of the reference implementation", assumption: "confirmed by Scott 2026-11-02"}
   # challenges (kept visible until resolved)
   - {from: E-IND, to: D-ADR1,   type: challenges, why: "independent assessor: ADR 0001 ratified before the Phase 0 comparison it depended on", evidence: [E-IND], resolution: "open; this plan defers its build rather than reversing ratification"}
   - {from: E-IND, to: H-ISO,    type: challenges, why: "independence_unverified should block any authorization", evidence: [E-IND], resolution: "adopted in validation.md V-ISO (label + block)"}

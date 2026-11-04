@@ -1,6 +1,6 @@
 # Implementation plan
 
-Status: **proposed; no code authorized.** Code starts only after Scott (a) ratifies or amends `CHARTER.md` and `intent.md`, (b) confirms Rust (D-RUST), and (c) approves opening slice issues.
+Status: **proposed; no code authorized.** Code starts only after Scott (a) ratifies or amends `CHARTER.md` and `intent.md`, (b) confirms Rust (D-RUST, done 2026-11-02), and (c) approves opening slice issues.
 
 **Approving this plan is not ratification.** Scott merging this PR adopts it as the working *proposed* plan. It does not ratify `CHARTER.md`, `intent.md`, any P-* node, or any change to ADR 0001, and it does not authorize implementation; each of those needs its own explicit decision from Scott. ADR 0001 keeps its historical status (ratified 2026-11-01, unchanged file); only its *implementation* disposition is challenged/deferred here. The previous ledger-first plan is preserved verbatim at [`525ac5e:.plan/implementation.md`](https://github.com/illtakecash/rm-theseus/blob/525ac5e/.plan/implementation.md); its dispositions are below.
 
@@ -72,5 +72,5 @@ Independent mode drops exactly `rationale`, `diagnosis`, `assessment`, `conclusi
 | Phase 0 multi-architecture comparison | challenged | Replaced by the B4 vertical slice; Track A/B stay as records. |
 | Phase 1 schemas and canonical hashing first | deferred | Only sha256 sealing of outputs is kept (B1). |
 | "First exercise" (consulting-os with failed correction) | retained | Becomes B5 + B6. |
-| PR #5 charter sentence | deferred | Moot until B3 exists. |
+| PR #5 charter sentence | open, decide with charter | Current CHARTER excludes "implementation-specific history" from the independent first pass; C-DUAL gives that pass dated decision `fact`s. Either adopt PR #5's sentence (or an equivalent covering decision facts) at ratification, or C-DUAL must drop the trajectory from the independent pass. |
 | Stop conditions | retained | Plus: if V-BASE fails at B4 (ties, regressions, or both), stop before B5 and ask Scott. |
