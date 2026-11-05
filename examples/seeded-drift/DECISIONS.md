@@ -1,0 +1,3 @@
+- D1 2026-10-01: Store entries in one local CSV file. Why: portable, diffable, no setup. Supersedes: none
+- D2 2026-10-03: Python standard library only. Why: zero install. Supersedes: none
+- D3 2026-10-08: Weekly totals computed on read, never stored. Why: one source of truth. Supersedes: none

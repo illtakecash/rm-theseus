@@ -1,5 +1,8 @@
 # State
 
+> **Superseded for v0 (2026-11-04):** per Scott's two-hour mandate (PR #6 comments 6646891298, 6646938318), v0 ships as the skill in `skills/drift-check/`. The B0–B4 build below is deferred, not deleted.
+
+
 Checkpoint only. Not a backlog.
 
 - **Active:** PR restructuring `.plan` around I-0 (this file's PR). No code.
