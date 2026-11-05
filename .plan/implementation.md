@@ -1,5 +1,8 @@
 # Implementation plan
 
+> **Superseded for v0 (2026-11-04):** per Scott's two-hour mandate (PR #6 comments 6646891298, 6646938318), v0 ships as the skill in `skills/drift-check/`. The B0–B4 build below is deferred, not deleted.
+
+
 Status: **proposed; no code authorized.** Code starts only after Scott (a) ratifies or amends `CHARTER.md` and `intent.md`, (b) confirms Rust (D-RUST, done 2026-11-02), and (c) approves opening slice issues.
 
 **Approving this plan is not ratification.** Scott merging this PR adopts it as the working *proposed* plan. It does not ratify `CHARTER.md`, `intent.md`, any P-* node, or any change to ADR 0001, and it does not authorize implementation; each of those needs its own explicit decision from Scott. ADR 0001 keeps its historical status (ratified 2026-11-01, unchanged file); only its *implementation* disposition is challenged/deferred here. The previous ledger-first plan is preserved verbatim at [`525ac5e:.plan/implementation.md`](https://github.com/illtakecash/rm-theseus/blob/525ac5e/.plan/implementation.md); its dispositions are below.
