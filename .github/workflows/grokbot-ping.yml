@@ -21,6 +21,7 @@ permissions: {}
 jobs:
   ping:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: ${{ !endsWith(github.event.comment.user.login || github.event.review.user.login || github.event.discussion.user.login || github.event.issue.user.login || github.event.pull_request.user.login || github.actor, '[bot]') }}
     steps:
       - name: Notify Grok Bot routine
