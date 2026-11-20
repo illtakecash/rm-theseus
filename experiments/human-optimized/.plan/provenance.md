@@ -1,17 +1,66 @@
 # Track A — Provenance and seal
 
-Status: Unsealed
+Status: Sealed (revision 2; see Revision 2 below)
 
-- Agent identity:
-- Execution/session:
-- Model/toolchain:
-- Originating task and human authorization:
-- Shared baseline commit/hash:
-- Allowed context and isolation mechanism:
-- Accidental exposure / independence status:
-- Design/evaluation artifact hashes:
-- Validation performed:
-- Parent commits/artifacts:
-- Sealed timestamp and commit:
+- Agent identity: Cursor cloud agent, run `bc-5204f77b-995a-5994-bf75-5c91ce54deae`, title "Theseus Track A: human-optimized design", run URL https://cursor.com/agents/bc-5204f77b-995a-5994-bf75-5c91ce54deae. Owning user reported by the run identity service: Scott Gardner (illtakecash@gmail.com). No subagents were spawned.
+- Execution/session: The same cloud-agent run, workspace `/workspace`, starting branch `main`. Repository URL reported by the run identity service: https://github.com/illtakecash/rm-theseus. This provenance file was written in that session after the design, evaluation, and fixture bytes below were frozen.
+- Model/toolchain: grok-4.7. Toolchain was the Cursor cloud agent session, `sha256sum`, and an in-session hash check that was not committed. No model other than grok-4.7 was used. No implementation code was added.
+- Originating task and human authorization: Scott Gardner via Grok Bot "General Contractor". The task was to complete Track A (human-optimized, document-first) inside `experiments/human-optimized/` only, to fill the three planning files, to seal them with content hashes, and to open a pull request against `main` containing only this folder. The same instruction forbade reading the shared baseline documents for this run.
+- Shared baseline commit/hash: `2031b30c0c5186d56e238fb4250e5ce74d6a5bcf` on `main`, the commit this session started from. Identifying it also revealed the commit subject `docs: record agent-native design provenance and isolation limitations`. The commit body and diff were not opened. `CHARTER.md` and root `.plan/implementation.md` were intentionally not read, despite the track README naming them as the shared baseline. The design works from this track's own instructions only. The assumptions that forces are listed in `.plan/design.md` under Assumptions.
+- Allowed context and isolation mechanism: Allowed repository reads were `experiments/human-optimized/README.md`, `.plan/README.md`, and the three planning skeletons. Writes stayed in that directory. Additional non-repository context was the task text, the run identity service response, and git metadata needed to name the starting commit. Isolation mechanism: behavioral compliance only. The checkout contains the whole repository. There was no separate worktree, sparse checkout, or access-control boundary. A path-limited `git log -1` on this folder was used to name the scaffold commit below. Repo-wide `git log -p`, `git grep`, root search, and GitHub inspection of other paths were not used.
+- Accidental exposure / independence status: Verified isolation is not claimed. Accidental exposure occurred and was limited to metadata. (1) The starting commit subject, quoted above, is outside the allowed documents. (2) The latest commit observed, via that path-limited log, to touch this folder before this session is `6b54a390610eb286872cabb9d0e01394e2988e83`, subject `plan: scaffold isolated design tracks (experiments/human-optimized/.plan/provenance.md)`. (3) The run identity service returned the repository URL and the owning user. No file outside `experiments/human-optimized/` was opened. Under this track's rule that any accidental exposure compromises independence, independence is **compromised**. The compromise is metadata, not document content. The architecture was not revised to answer the starting commit subject. There is no technical proof that the subject had zero influence; the design text does not use it, and the Assumptions section records the unread-baseline gap instead.
+- Design/evaluation artifact hashes: SHA-256 of the frozen revision 2 bytes. Revision 1 digests, sealed in commit `80b085bf84f158da317444281520e39638e7b887`, are superseded and are listed under Revision 2 below. Design and evaluation were not edited after these revision 2 digests were computed. Supporting markdown written for the fixture is listed too. The two pre-existing instruction files were not modified; their digests are included so a later reader can see exactly which instructions were in force. This provenance file is not in the list, because writing it cannot include its own final digest.
 
-Do not claim verified isolation without an enforceable access boundary.
+  | File | SHA-256 |
+  | --- | --- |
+  | `.plan/design.md` | `fec5ed2d9756ffb920dae505239bdda426617866af1dfeb1c97fcdb6f9fe7a58` |
+  | `.plan/evaluation.md` | `50bfb27e12f863d937f65672a8616a94705b8e34c099a0007f14bd9eeff6bd88` |
+  | `fixture/seal-log.md` | `e6a6f59d792ae42b375bf2a12e7180e3a665b6180c5d59c8873499f6672fa6e8` |
+  | `fixture/README.md` | `c1e352ff26acf50e885049b367f75a9a01a91f22de2b959481d2cbccc7cfe067` |
+  | `fixture/b0/intent.md` | `6e057404c1a4a6d73756d9289ac1f9a4abf7d0df4dd0b3916054f632c00d1a23` |
+  | `fixture/b0/parts.md` | `c66ea113ee5454847f5a818525cac8b947e377f056016f1cce51b940e25a9f33` |
+  | `fixture/b0/baseline.md` | `1280e0b0d77c99bbe09d6fe8412b8ae55f0cc4bf4430ad2a7cfc0161a9d5ed62` |
+  | `fixture/b0/projection.md` | `6bb3abe8f6cd869e66fe90ac8d4033ecbea640b61d8a18e98d690b002db25d77` |
+  | `fixture/cycle1/observation-o1.md` | `c530b33a67a07d2fd5c0306d0b2c4cddaca6409f1d6bfdccf29a7179b0377010` |
+  | `fixture/cycle1/diagnosis-d1.md` | `f63409497d04d26131a777d8a8d591f855377dc1eaf5042b5c11b75d7781c235` |
+  | `fixture/cycle1/p-notice-c1.md` | `81145495608043002140a21bccdc00fa06c08f873b056d8af612fa2368fe14ad` |
+  | `fixture/cycle1/proposal-c1.md` | `5f996766c49c81195c7cd6f13adc671d6289b23a2d9889461b84dd327061098c` |
+  | `fixture/cycle1/packet-a1.md` | `f8b31ecd1fafddd2de70867b2a9ae9b1f568f7019bffbc52c645b4021119d0fd` |
+  | `fixture/cycle1/assessment-a1.md` | `ba10081c66690e013ff76cba0e20834f6d657fcb0cadf2f2ed0cf18541d3f614` |
+  | `fixture/cycle1/authorization-r1.md` | `d91e81d5dfb0fa033d7fa85977e3cd575db61cbc5d7beafd499af22f06417f98` |
+  | `fixture/cycle1/baseline-b1.md` | `27693e11e963e73072236cd7a3def940adcd9b62aac5d7261ee5bd6e3269e323` |
+  | `fixture/cycle1/observation-o2.md` | `85be93ea58e1eda6c2d4b7c83270e6c340670218a537e91926102a7a558a705c` |
+  | `fixture/cycle2/diagnosis-d2.md` | `fb858fdf96cba7f9fe1192847cde7219c7e8c7849bbc9a11ace3b3b6697442b2` |
+  | `fixture/cycle2/p-notice-c2.md` | `7ce37051f10c004bf267bf114de0a87599a3f1c5d99fe46cf5b2b52e184a2a36` |
+  | `fixture/cycle2/proposal-c2.md` | `f2d4048ab6766d8a09c995ead481544d41bae76d12fac1a441b2e15c6adb00fb` |
+  | `fixture/cycle2/packet-a2.md` | `2f7ace08b63fed0aad6c1418e13f56890bfeb0b7dcbe6f6bbea23631a0c71675` |
+  | `fixture/cycle2/assessment-a2.md` | `a68044a4c35218aa230e5772555ba7f5db8da541e4c5970c96f907bd74ca9f03` |
+  | `fixture/cycle2/refusal-r2.md` | `8eaaaf3223b97dbb5df939cde32aad042226e6172fc6472bb23f4ed7ddc9b4c8` |
+  | `fixture/cycle2/observation-o3.md` | `59128f04669316340fa8170454da12cff1b291c465486ec504b69cf1f584d3a2` |
+  | `fixture/cycle2/reeval-f2.md` | `d0c5734ba5a08d07df3382c1e170a92477ca68f2c279052aabef149b910a3a0a` |
+  | `fixture/register.md` | `73bd7f2ef2310391be8b1c0e647d35bd943937b8b14a0b4fb38aa6138ef555b7` |
+  | `README.md` (pre-existing, unmodified) | `22aebc7ace00001ee322bd0779a48445dcdc4e45b82697933b78c80fbc1d95f9` |
+  | `.plan/README.md` (pre-existing, unmodified) | `02ebc23da12dfba2f84c688c850d7e829d94e806eaa3599c7812ec00646e2bd4` |
+
+- Validation performed (revision 1): `sha256sum` matches the design, evaluation, and seal-log digests above. Every `filename` plus 64-hex digest quoted inside the fixture resolved to the current bytes of that file. Packet A1 and packet A2 copies of their source files compared equal to those sources. The seal log's `prev` chain was recomputed from `genesis` over each record line including its newline and matched. Assessments do not contain the diagnosis cause-claim wording; they do name the excluded filenames. Byte rules (UTF-8, LF, one trailing newline, no trailing spaces) held for the markdown in this folder at seal time. No second context re-ran the packets. No scanner was written. A repository-wide pull-request template was not searched for, because that search would leave this folder.
+- Parent commits/artifacts: Starting commit `2031b30c0c5186d56e238fb4250e5ce74d6a5bcf`. Scaffold commit observed for this path `6b54a390610eb286872cabb9d0e01394e2988e83`. Pre-existing artifacts in force: `README.md`, `.plan/README.md`, and the empty section skeletons this session replaced in the three planning files.
+- Sealed timestamp and commit (revision 1, superseded): Content freeze `2026-11-01T20:13:18Z` (UTC), which is the timestamp on every fixture seal-log record. Design status Complete. Evaluation status Complete. This file's status is Sealed. The git commit that introduces these frozen bytes is recorded in the follow-up line below once that commit exists, so this recording does not change the design or evaluation digests.
+
+  Sealing commit: `80b085bf84f158da317444281520e39638e7b887`. That commit introduces the frozen design, evaluation, and fixture bytes. A follow-up commit records this id in this line only and does not change those bytes.
+
+## Revision 2 — review revision
+
+- Status: this revision supersedes the revision 1 seal in commit `80b085bf84f158da317444281520e39638e7b887` (and its follow-up provenance commit `bb8b33341674e7027934e14098d84338f1267487`). Revision 1 digests are no longer the published example.
+- Trigger: two P2 inline comments from the automated Codex review on pull request #1 (illtakecash/rm-theseus), on `.plan/design.md`, relayed by Scott Gardner with the instruction to address them. Both were verified against the revision 1 bytes before editing.
+- Why: (1) the fixture did not satisfy its own manifest rule. `authorization-r1.md` and `refusal-r2.md` had no `Excluded`; observations O1, O2, and O3 had no `Inputs`; packets A1 and A2 had neither `Inputs` nor `Input-hash` and recorded sources on a `Source` label that is not in the closed vocabulary. Diagnoses D1 and D2 also had no `Inputs` or `Input-hash`, found during the same check. A clerk enforcing the rule could not accept R1 as authorizing B1 or O2 as its confirming observation. (2) The derived-status row for `implemented` looked for the finding id on `Scope`, while R1 carries `F1` on `Finding` and `INV-2, P-NOTICE` on `Scope`, so the register's `F1 implemented for INV-2` row could not be derived.
+- What changed, comment 1 (manifests completed; no per-kind exceptions): design defines which kinds are acts, requires `Act`, `Actor`, `Baseline`, `Inputs`, exactly one `Input-hash` per input, and `Excluded` on every act, states that an incomplete manifest voids the act and cannot be quoted, states that non-act kinds (intent, part, baseline, projection, re-evaluation) carry no manifest and what they carry instead, and says `Source` is not a label. `Act` gains the value `package` for the clerk's packet act. The authorizer's role row now says the diagnosis is outside its context, which is what R1 and R2 now list on `Excluded`. Fixture: packets A1 and A2 use `Act: package`, `Inputs`, and `Input-hash` in place of `Source`; O1, O2, O3, D1, and D2 gained `Inputs` and the `Input-hash` lines for files they actually used; R1 and R2 gained `Excluded`. The clerk check list and the fixture README's verification steps gained the manifest check.
+- What changed, comment 2 (finding vs scope): the derived-status table reads the finding id from `Finding` (or `Opens`) and the invariants from `Scope` and `Checked-invariant`; `implemented` is for the invariant anchors on the authorization's `Scope`; the closed-confirmed, refused, and closed-failed rows name the labeled lines they read. `Scope` and `Finding` vocabulary entries and the authorization validity list say the same. `fixture/register.md` row B1 states which R1 lines it derives from.
+- Other edits: evaluation self-review records that an outside reviewer found both defects; the fixture README's verification root is `experiments/human-optimized/`, matching the paths in the files; packets refer to the digests named on `Input-hash`.
+- Consequential re-seal: every changed file's digest was recomputed and every `filename sha256` reference, packet copy, seal-log `body` and `prev`, and this file's table were updated. Seal-log records carry `at=2026-11-01T20:23:05Z` (UTC; 3:23:05 PM EST), the revision 2 content freeze. Files whose bytes did not change (`b0/intent.md`, `b0/parts.md`, `b0/baseline.md`, `b0/projection.md`, `cycle1/p-notice-c1.md`, `cycle2/p-notice-c2.md`) kept their digests.
+- Revision 1 digests (superseded): `.plan/design.md` `76a8b651bc0f4f7f1b8d1ff779491f1c876c62590f8353631aab95ed7845101b`; `.plan/evaluation.md` `39f3c3306f699192a79e45418b4dfe2388092e9bcc297b4b7dfdfc67a9dbaed5`; `fixture/seal-log.md` `2de1c32a65e3cd160a4460449340003003ec5da3cc8db1fe16e53c8be753177f`.
+- Revision 2 digests: the table above. `.plan/design.md` `fec5ed2d9756ffb920dae505239bdda426617866af1dfeb1c97fcdb6f9fe7a58`; `.plan/evaluation.md` `50bfb27e12f863d937f65672a8616a94705b8e34c099a0007f14bd9eeff6bd88`; `fixture/seal-log.md` `e6a6f59d792ae42b375bf2a12e7180e3a665b6180c5d59c8873499f6672fa6e8`.
+- Agent and execution: Grok Bot ("General Contractor"), executor subagent, running locally on the bot's own Linux box at Scott Gardner's request rather than as a cloud agent. Toolchain: `git`, `gh` (authenticated as illtakecash), `sha256sum`, and Python scripts kept outside the repository and not committed. No implementation code was added to the repository.
+- Isolation mechanism for this revision: a partial, sparse clone. `git clone --filter=blob:none --no-checkout --branch cursor/human-optimized-theseus-deae`, then `git sparse-checkout set --no-cone /experiments/human-optimized/`, then `git checkout`. Only blobs under `experiments/human-optimized/` were fetched and written to disk; no other path in the repository existed in the working tree. Reads and edits were limited to that folder. Git history was read only with path-limited `git log -- .` inside this folder. No repo-wide `git log -p`, `git grep`, or GitHub inspection of other paths was used. GitHub reads were the two review comments on pull request #1. This is stronger than revision 1's behavioral compliance and still not access control: the clone's object database holds the full commit and tree metadata, and the remote is readable.
+- Accidental exposure in this revision: none beyond what revision 1 records. Independence status is unchanged: verified isolation is not claimed, and the exposure stays limited to the metadata described above. The review comments concern only this folder.
+- Validation performed for revision 2: a check script recomputed SHA-256 for every file in this folder, confirmed every `filename sha256` reference in the fixture and every row in the table above matches current bytes, confirmed each packet copy equals its source file, recomputed the seal-log `prev` chain from `genesis`, confirmed every act file has a complete manifest (`Act`, `Actor`, `Baseline`, `Inputs`, `Excluded`, one `Input-hash` per input and none extra), confirmed no `Source:` label remains, and checked the byte rules. All passed.
+- Sealed timestamp and commit: revision 2 content freeze `2026-11-01T20:23:05Z` (UTC). The commit that introduces these bytes is the revision 2 commit on branch `cursor/human-optimized-theseus-deae` that follows `bb8b33341674e7027934e14098d84338f1267487`; its id is reported on the pull request rather than written here, so recording it does not change any digest.
