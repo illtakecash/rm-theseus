@@ -72,5 +72,5 @@ Independent mode drops exactly `rationale`, `diagnosis`, `assessment`, `conclusi
 | Phase 0 multi-architecture comparison | challenged | Replaced by the B4 vertical slice; Track A/B stay as records. |
 | Phase 1 schemas and canonical hashing first | deferred | Only sha256 sealing of outputs is kept (B1). |
 | "First exercise" (consulting-os with failed correction) | retained | Becomes B5 + B6. |
-| PR #5 charter sentence | open, decide with charter | Current CHARTER excludes "implementation-specific history" from the independent first pass; C-DUAL gives that pass dated decision `fact`s. Either adopt PR #5's sentence (or an equivalent covering decision facts) at ratification, or C-DUAL must drop the trajectory from the independent pass. |
+| PR #5 charter amendment | direction authorized (relayed), in force on merge | PR #5 now amends CHARTER to admit ordered, dated decision facts (no rationale, diagnosis, assessments, conclusions) to the independent first pass, matching C-DUAL. Full charter ratification is still separate. |
 | Stop conditions | retained | Plus: if V-BASE fails at B4 (ties, regressions, or both), stop before B5 and ask Scott. |
