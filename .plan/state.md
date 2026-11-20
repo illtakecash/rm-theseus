@@ -1,5 +1,10 @@
 # State
 
+> **Superseded for v0 (2026-11-04):** per Scott's two-hour mandate (PR #6 comments 6646891298, 6646938318), v0 ships as the skill in `skills/drift-check/`. The B0–B4 build below is deferred, not deleted.
+>
+> **CodeGraph in the v0 skill (2026-11-12):** Scott approved in Grok Bot chat that the skill must handle large repos and use CodeGraph. The procedure is in `skills/drift-check/SKILL.md`. B8's Rust adapter stays deferred. This note does not ratify `CHARTER.md` or `intent.md`.
+
+
 Checkpoint only. Not a backlog.
 
 - **Active:** PR restructuring `.plan` around I-0 (this file's PR). No code.

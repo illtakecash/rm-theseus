@@ -1,5 +1,10 @@
 # Implementation plan
 
+> **Superseded for v0 (2026-11-04):** per Scott's two-hour mandate (PR #6 comments 6646891298, 6646938318), v0 ships as the skill in `skills/drift-check/`. The B0–B4 build below is deferred, not deleted.
+>
+> **B8 skill portion pulled forward (2026-11-12):** Scott approved in Grok Bot chat that this v0 skill has to work on large repos and has to use CodeGraph. That procedure now lives in `skills/drift-check/SKILL.md`. The Rust adapter in the B8 row stays deferred. CodeGraph results stay E-* evidence and must not modify I-* or P-* nodes (R6). This note does not ratify `CHARTER.md` or `intent.md`.
+
+
 Status: **proposed; no code authorized.** Code starts only after Scott (a) ratifies or amends `CHARTER.md` and `intent.md`, (b) confirms Rust (D-RUST, done 2026-11-02), and (c) approves opening slice issues.
 
 **Approving this plan is not ratification.** Scott merging this PR adopts it as the working *proposed* plan. It does not ratify `CHARTER.md`, `intent.md`, any P-* node, or any change to ADR 0001, and it does not authorize implementation; each of those needs its own explicit decision from Scott. ADR 0001 keeps its historical status (ratified 2026-11-01, unchanged file); only its *implementation* disposition is challenged/deferred here. The previous ledger-first plan is preserved verbatim at [`525ac5e:.plan/implementation.md`](https://github.com/illtakecash/rm-theseus/blob/525ac5e/.plan/implementation.md); its dispositions are below.
@@ -18,7 +23,7 @@ Every slice cites the graph node it builds. If a slice can't name a capability a
 | **B5** | H-GRADE | Method frozen (commit recorded), then the first-ever model runs on held-out `consulting-os`: baseline and method. No prompt or method change after unsealing its key. Starts only after V-BASE passes, or Scott decides how to proceed after it fails. | V-HELD, plus a V-BASE-style comparison on this case. |
 | **B6** | H-ASSESSOR | Correction loop: apply proposed recovery to the fixture's state, re-run, compare. Include one deliberately failed correction. | V-CORR. First point where H-LEDGER might be needed; decide then. |
 | **B7** | H-PACKET | Full compression benchmark: packet loops vs. full-document loops on the same tasks, using the packet contract already in use since B1/B3. | V-COST, V-RETAIN. |
-| B8 (optional) | H-CODEGRAPH | Detect `@colbymchenry/codegraph` (MCP `codegraph_explore`, or CLI `npx --yes @colbymchenry/codegraph explore`/`status`); attach results as `E-*` evidence only. Core runs without it. | Same B4 result with and without it; no I/P node changes from it (R6). |
+| B8 (optional) | H-CODEGRAPH | Detect `@colbymchenry/codegraph` (MCP `codegraph_explore`, or CLI `npx --yes @colbymchenry/codegraph explore`/`status`); attach results as `E-*` evidence only. Core runs without it. **Skill portion pulled into v0 on 2026-11-12** (see the banner). The Rust adapter in this row is still deferred. The docs-only seeded fixture still runs with no CodeGraph; a large or real repo does not get a `no drift` verdict from a 10-commit skim when CodeGraph is missing. | Rust slice: same B4 result with and without it; no I/P node changes from it (R6). |
 
 Proposed ownership, carried from the ADR 0001 split and open to GPT's counter: Grok Bot B0 (fixture assembly; keys are Scott's), B1, B3, B6; ChatGPT B2, B5, B7; B4 and B8 shared.
 
